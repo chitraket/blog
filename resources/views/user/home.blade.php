@@ -20,7 +20,7 @@
                 </div>	
                 <div class="head-bottom-meta d-flex justify-content-between align-items-end col-lg-12">
                     <div class="col-lg-6 flex-row d-flex meta-left no-padding">
-                        <p >
+                        <p>
                         @if (Auth::guest())
                         <a href="javascript:void(0);" onclick="toastr.info('To add favorite list. You need to login first.','Info',{
                             closeButton: true,

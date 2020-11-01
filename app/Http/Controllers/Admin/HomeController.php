@@ -24,7 +24,7 @@ class HomeController extends Controller
     
         foreach(Auth::user()->roles as $role)
         {
-          if($role->id == 5)
+          if($role->id == 4)
           {
             $posts=post::all();
             $tag=tag::all();

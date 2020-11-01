@@ -4,9 +4,11 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Providers\RouteServiceProvider;
+use Brian2694\Toastr\Facades\Toastr;
 use App\Model\user\User;
 use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Image;
@@ -31,18 +33,15 @@ class RegisterController extends Controller
      *
      * @var string
      */
-   
+    
     public function showRegistrationForm(Request $request)
     {
         App::setLocale($request->locale);
         session()->put('locale', $request->locale);
+        session()->put('getback', url()->previous());
         return view('auth.register');
     }
-    
-    protected  function redirectTo()
-    {
-        return url()->previous();
-    }
+
     /**
      * Create a new controller instance.
      *
@@ -53,40 +52,29 @@ class RegisterController extends Controller
         $this->middleware('guest');
     }
 
-    /**
-     * Get a validator for an incoming registration request.
-     *
-     * @param  array  $data
-     * @return \Illuminate\Contracts\Validation\Validator
-     */
-    protected function validator(array $data)
-    {
-        return Validator::make($data, [
+    public function register(Request $request){
+        $this->validate($request,[
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
             'profile_picture'=>['required','mimes:jpeg,png,jpg'],
         ]);
-    }
-
-    /**
-     * Create a new user instance after a valid registration.
-     *
-     * @param  array  $data
-     * @return \App\User
-     */
-    protected function create(array $data)
-    {
-            $filename = md5(time()).'.'.$data['profile_picture']->getClientOriginalExtension();
+        $user=new User;
+        if ($request->hasfile('profile_picture')) {
+            $filename = md5(time()).'.'.$request->file('profile_picture')->getClientOriginalExtension();
             $destinationPath = public_path('/images');
-            $imgx = Image::make($data['profile_picture']->path());
+            $imgx = Image::make($request->file('profile_picture')->path());
             $imgx->resize(62,62)->save($destinationPath.'/user_62X62/'.$filename);
-
-        return User::create([
-            'name' => $data['name'],
-            'email' => $data['email'],
-            'password' => Hash::make($data['password']),
-            'image' => $filename,
-        ]);
+            $user->image=$filename;
+        }
+        $user->name=$request->name;
+        $user->email=$request->email;
+        $user->password=$request->password;
+        if ($user->save()) {
+               Toastr::success('Register Successfully', 'Success');
+               Auth::guard()->login($user);
+           }
+           return redirect(session()->get('getback'));
     }
+    
 }

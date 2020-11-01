@@ -288,32 +288,6 @@
                         <a href="#"><button class="btn"><i class="fa fa-twitter" aria-hidden="true"></i> follow</button></a>
                     </div> --}}
                 </div>
-                @if (isset($categorypost) && !$categorypost->isEmpty())
-                <div class="single_widget cat_widget">
-                    <h4 class="text-uppercase pb-20">{{__('post.category')}}</h4>
-                    <ul>
-                        @foreach ($categorypost as $categoryposts)
-                            @if (!$categoryposts->posts()->count()==0)
-                                <li>
-                                <a href="{{ route('category',['locale'=>app()->getLocale(),'category'=>$categoryposts->slug]) }}">{{ $categoryposts->name }} <span>{{$categoryposts->posts()->count()}}</span></a>
-                                </li>
-                            @endif
-                        @endforeach                              
-                    </ul>
-                </div>
-                @endif 
-                @if (isset($tagpost) && !$tagpost->isEmpty())
-                <div class="single_widget tag_widget">
-                    <h4 class="text-uppercase pb-20">{{__('post.tag')}}</h4>
-                    <ul>
-                        @foreach ($tagpost as $tagposts)
-                        <li>
-                        <a href="{{ route('tag',['locale'=>app()->getLocale(),'tag'=>$tagposts->slug]) }}">{{ $tagposts->name }}</a>
-                        </li>
-                        @endforeach 
-                    </ul>
-                </div> 
-                @endif 
                 @if (isset($posts) && !$posts->isEmpty())
                 <div class="single_widget recent_widget">
                     <h4 class="text-uppercase pb-20">{{__('post.recentposts')}}</h4>
@@ -348,7 +322,68 @@
                         @endforeach                                                                                          
                     </div>
                 </div>   
-                @endif                                              
+                @endif  
+                @if (isset($categorypost) && !$categorypost->isEmpty())
+                <div class="single_widget cat_widget">
+                    <h4 class="text-uppercase pb-20">{{__('post.category')}}</h4>
+                    <ul>
+                        @foreach ($categorypost as $categoryposts)
+                            @if (!$categoryposts->posts()->count()==0)
+                                <li>
+                                <a href="{{ route('category',['locale'=>app()->getLocale(),'category'=>$categoryposts->slug]) }}">{{ $categoryposts->name }} <span>{{$categoryposts->posts()->count()}}</span></a>
+                                </li>
+                            @endif
+                        @endforeach                              
+                    </ul>
+                </div>
+                @endif 
+                @if (isset($post_top) && !$post_top->isEmpty())
+                <div class="single_widget recent_widget">
+                    <h4 class="text-uppercase pb-20">{{__('post.recentposts')}}</h4>
+                    <div class="{{ $s }}recent-carusel">
+                        @foreach ($post_top as $item)
+                        <div class="item">
+                            <img src="{{ url('images/post_302X183/' . $item->image) }}" alt="{{ $item->image }}">  
+                        <a href="{{ route('post',['locale'=>app()->getLocale(),'post'=>$item->slug]) }}"><p class="mt-20 title ">{{ $item->title}} </p></a>    
+                        <p>{{ $item->created_at->diffForHumans() }}
+                                 <span>
+                                    <i class="fa fa-comment-o" aria-hidden="true"></i> {{ $item->comments->count() }}
+                                    @if (Auth::guest())
+                                    <a href="javascript:void(0);" onclick="toastr.info('To add favorite list. You need to login first.','Info',{
+                                        closeButton: true,
+                                        progressBar: true,
+                                    })" class="text-dark "><i class="fa fa-heart-o" aria-hidden="true"></i> {{ $item->favorite_post->count() }}</a>
+                                    @else
+                                    <a href="javascript:void(0);" onclick="document.getElementById('favorite-form-{{ $item->id }}').submit();" class="text-dark ">
+                                   @if ($user->favorite_post()->where('post_id', $item->id)->count() == 0)
+                                   <i class="fa fa-heart-o"></i> {{ $item->favorite_post->count() }}</a>
+                                   @else
+                                   <i class="fa fa-heart"></i> {{ $item->favorite_post->count() }}</a> 
+                                   @endif
+                                    <form id="favorite-form-{{ $item->id }}" method="POST" action="{{ route('post.favorite',['locale'=>app()->getLocale(),'post'=>$item->id]) }}" style="display: none;">
+                                        @csrf
+                                        <input type="hidden" name="admin_id" id="admin_id" value="{{ $item->admin->id }}">
+                                    </form> 
+                                    @endif 
+                                 </span>
+                        </p>  
+                        </div>  
+                        @endforeach                                                                                          
+                    </div>
+                </div>   
+                @endif  
+                @if (isset($tagpost) && !$tagpost->isEmpty())
+                <div class="single_widget tag_widget">
+                    <h4 class="text-uppercase pb-20">{{__('post.tag')}}</h4>
+                    <ul>
+                        @foreach ($tagpost as $tagposts)
+                        <li>
+                        <a href="{{ route('tag',['locale'=>app()->getLocale(),'tag'=>$tagposts->slug]) }}">{{ $tagposts->name }}</a>
+                        </li>
+                        @endforeach 
+                    </ul>
+                </div> 
+                @endif                                                
             </div>
         </div>
     </div>    

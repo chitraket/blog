@@ -8,7 +8,6 @@
         <!-- Start Header Area -->
         @include('user/layouts/header')
         <!-- End Header Area -->
-
         @section('main-content')
             
         @show

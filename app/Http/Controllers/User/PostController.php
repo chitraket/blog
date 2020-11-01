@@ -29,20 +29,30 @@ class PostController extends Controller
                     ->selectRaw('posts.*')
                     ->get();
                 $categorys=post::join('category_posts', 'category_posts.post_id', '=', 'posts.id')
-                ->where(['category_posts.category_id'=> $item->id,'posts.status'=> 1 ,'posts.language'=>$request->locale])
-                ->whereNotNull('posts.image')
-                ->selectRaw('posts.*')
-                ->orderBy('posts.created_at', 'desc')
-                ->get();
+                    ->where(['category_posts.category_id'=> $item->id,'posts.status'=> 1 ,'posts.language'=>$request->locale])
+                    ->whereNotNull('posts.image')
+                    ->selectRaw('posts.*')
+                    ->orderBy('posts.created_at', 'desc')
+                    ->get();
+                $post_top=post::join('category_posts', 'category_posts.post_id', '=', 'posts.id')
+                    ->where(['category_posts.category_id'=> $item->id,'posts.status'=> 1 ,'posts.language'=>$request->locale])
+                    ->withCount('comments')
+                    ->withCount('favorite_post')
+                    ->orderBy('view_count', 'desc')
+                    ->orderBy('comments_count', 'desc')
+                    ->orderBy('favorite_post_count', 'desc')
+                    ->whereNotNull('posts.image')
+                    ->selectRaw('posts.*')
+                    ->orderBy('posts.created_at', 'desc')
+                    ->take(4)
+                    ->get();
            }
-
            $previous=$category->where('id', '<', $post->id)->first();
            $next=$category->where('id', '>', $post->id)->first();
            $tagpost=tag::where('language',$request->locale)->get();
            $categorypost=category::where('language',$request->locale)->get();
-           $posts=$category->take(4);
+           $posts=$categorys->take(4);
            $blogKey = 'blog_' . $post->id;
-
           if (!Session::has($blogKey)) {
                $post->increment('view_count');
                Session::put($blogKey,1);
@@ -58,6 +68,17 @@ class PostController extends Controller
                         $k="";
                 }
             }
+            foreach($post_top as $key=>$items)
+            {
+                if($key>0)
+                {
+                    $s="active-";
+                }
+                else
+                {
+                    $s="";
+                }
+            }
             if (Auth::guest()) {
                  $c="";
             }
@@ -69,7 +90,7 @@ class PostController extends Controller
                     $c="";
                 }
             }    
-        return view('user.post', compact('post', 'previous', 'next', 'posts','k','categorypost','tagpost','c','user'));  
+        return view('user.post', compact('post', 'previous', 'next', 'posts','k','categorypost','tagpost','c','user','post_top','s'));  
     }
         else
         {

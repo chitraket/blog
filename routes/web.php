@@ -23,11 +23,13 @@ Route::group(['namespace'=> 'User','prefix'=>'{locale}','where'=>['locale'=>'[a-
     Route::get('category/{category}', 'PostController@category')->name('category');
     Route::get('/search','SearchController@search')->name('search');
     Route::get('profile/{username}','AuthorController@profile')->name('profile');
+
 });
 //Admin Routes
 Route::get('admin-login','Admin\Auth\LoginController@showLoginForm')->name('admin.login');
 Route::post('admin-login','Admin\Auth\LoginController@login');
-
+Route::post('/logout','Auth\LoginController@logout')->name('logout');
+Route::post('/register','Auth\RegisterController@logout')->name('register');
 
 Route::group(['namespace'=> 'Admin','middleware'=>'auth:admin'],function(){
     
