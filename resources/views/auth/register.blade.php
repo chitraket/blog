@@ -1,10 +1,9 @@
 @extends('user/app')
 @section('title'){{ __('header.register')}} @endsection
-@section('footer')
+@section('head')
 <!--Toastr-->
-<script src="{{ asset('admin/plugins/toastr/toastr.js.map') }}"></script>
-<script src="{{ asset('admin/plugins/toastr/toastr.min.js') }}"></script>
-{!! Toastr::message() !!}
+<link rel="stylesheet" href="{{ asset('admin/plugins/toastr/toastr.css') }}">
+<link rel="stylesheet" href="{{ asset('admin/plugins/toastr/toastr.min.css') }}">
 @endsection
 @section('main-content')
 
@@ -28,6 +27,7 @@
         <div class="col-md-8">
             <div class="card border-0">
                 <article class="card-body">
+                    @include('includes.messages')
                      <form method="POST" action="{{ route('register',app()->getLocale()) }}" enctype="multipart/form-data">
                         @csrf
                     <div class="form-group">

@@ -3,3 +3,6 @@
                     {{Toastr::error($error) }}
                 @endforeach                    
                 @endif
+                @if (session('status'))
+                {{Toastr::success(session('status')) }}
+                @endif

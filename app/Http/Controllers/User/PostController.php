@@ -15,6 +15,48 @@ use App;
 class PostController extends Controller
 {
     //
+    public function allpost(Request $request)
+    {
+        App::setLocale($request->locale);
+        session()->put('locale', $request->locale);
+        $posts=post::where(['status'=>1,'language'=>$request->locale])->paginate(6);
+        if (count($posts) !=0 ) {
+            $tagpost=tag::where('language',$request->locale)->get();
+            $categorypost=category::where('language',$request->locale)->get();
+            $categorys=post::where(['status'=>1,'language'=>$request->locale])->orderBy('created_at', 'desc')->take(4)->get();
+            $post_top = post::withCount('comments')
+                                ->withCount('favorite_post')
+                                ->orderBy('view_count','desc')
+                                ->orderBy('comments_count','desc')
+                                ->orderBy('created_at', 'desc')
+                                ->orderBy('favorite_post_count','desc')
+                                ->take(4)->get();
+
+            foreach ($categorys as $key => $items) {
+                if ($key>0) {
+                     $k="active-";
+                } 
+                else {
+                    $k="";
+                }
+            }
+            foreach($post_top as $key=>$items)
+                    {
+                        if($key>0)
+                        {
+                            $s="active-";
+                        }
+                        else
+                        {
+                            $s="";
+                        }
+                    }
+            return view('user.allpost', compact('posts','tagpost','categorypost','categorys','k','post_top','s'));
+        }
+        else{
+            return view('user.error');   
+        }
+    }
    public function post(Request $request)
    {
        App::setLocale($request->locale);
@@ -47,6 +89,7 @@ class PostController extends Controller
                     ->take(4)
                     ->get();
            }
+           $random = post::inRandomOrder()->take(4)->get();
            $previous=$category->where('id', '<', $post->id)->first();
            $next=$category->where('id', '>', $post->id)->first();
            $tagpost=tag::where('language',$request->locale)->get();
@@ -79,6 +122,17 @@ class PostController extends Controller
                     $s="";
                 }
             }
+            foreach($random as $key=>$items)
+            {
+                if($key>0)
+                {
+                    $r="active-";
+                }
+                else
+                {
+                    $r="";
+                }
+            }
             if (Auth::guest()) {
                  $c="";
             }
@@ -89,9 +143,10 @@ class PostController extends Controller
                 } else {
                     $c="";
                 }
-            }    
-        return view('user.post', compact('post', 'previous', 'next', 'posts','k','categorypost','tagpost','c','user','post_top','s'));  
+            }   
+        return view('user.post', compact('post', 'previous', 'next', 'posts','k','categorypost','tagpost','c','user','post_top','s','random','r'));  
     }
+    
         else
         {
             return view('user.error');
@@ -107,7 +162,30 @@ class PostController extends Controller
            $user=Auth::user();
            $tagpost=tag::where('language', $request->locale)->get();
            $categorypost=category::where('language', $request->locale)->get();
-           $tags=$tag->posts()->where('language', $request->locale)->take(4);
+           $tags=$tag->posts()->where('language', $request->locale)->sortByDesc('created_at')->take(4);
+           $post_top=post::join('post_tags', 'post_tags.post_id', '=', 'posts.id')
+                    ->where(['post_tags.tag_id'=> $tag->id,'posts.status'=> 1 ,'posts.language'=>$request->locale])
+                    ->withCount('comments')
+                    ->withCount('favorite_post')
+                    ->orderBy('view_count', 'desc')
+                    ->orderBy('comments_count', 'desc')
+                    ->orderBy('favorite_post_count', 'desc')
+                    ->whereNotNull('posts.image')
+                    ->selectRaw('posts.*')
+                    ->orderBy('posts.created_at', 'desc')
+                    ->take(4)
+                    ->get();
+            foreach($post_top as $key=>$items)
+                    {
+                        if($key>0)
+                        {
+                            $s="active-";
+                        }
+                        else
+                        {
+                            $s="";
+                        }
+                    }
            foreach ($tags as $key => $items) {
                if ($key>0) {
                    $k="active-";
@@ -115,7 +193,7 @@ class PostController extends Controller
                    $k="";
                }
            }
-           return view('user.tag', compact('posts', 'tag', 'tags', 'tagpost', 'categorypost', 'k', 'user'));
+           return view('user.tag', compact('posts', 'tag', 'tags', 'tagpost', 'categorypost', 'k', 'user','post_top','s'));
        }
     else
     {
@@ -132,7 +210,19 @@ class PostController extends Controller
             $user=Auth::user();
             $tagpost=tag::where('language', $request->locale)->get();
             $categorypost=category::where('language', $request->locale)->get();
-            $categorys=$category->posts()->take(4);
+            $categorys=$category->posts()->where('language', $request->locale)->sortByDesc('created_at')->take(4);
+            $post_top=post::join('category_posts', 'category_posts.post_id', '=', 'posts.id')
+                    ->where(['category_posts.category_id'=> $category->id,'posts.status'=> 1 ,'posts.language'=>$request->locale])
+                    ->withCount('comments')
+                    ->withCount('favorite_post')
+                    ->orderBy('view_count', 'desc')
+                    ->orderBy('comments_count', 'desc')
+                    ->orderBy('favorite_post_count', 'desc')
+                    ->whereNotNull('posts.image')
+                    ->selectRaw('posts.*')
+                    ->orderBy('posts.created_at', 'desc')
+                    ->take(4)
+                    ->get();
             foreach ($categorys as $key => $items) {
                 if ($key>0) {
                     $k="active-";
@@ -140,11 +230,23 @@ class PostController extends Controller
                     $k="";
                 }
             }
-            return view('user.category', compact('posts', 'category', 'categorypost', 'tagpost', 'categorys', 'k', 'user'));
+            foreach($post_top as $key=>$items)
+            {
+                if($key>0)
+                {
+                    $s="active-";
+                }
+                else
+                {
+                    $s="";
+                }
+            }
+            return view('user.category', compact('posts', 'category', 'categorypost', 'tagpost', 'categorys', 'k', 'user','post_top','s'));
         }   
         else
         {
             return view('user.error');
         }
+
      }
 }

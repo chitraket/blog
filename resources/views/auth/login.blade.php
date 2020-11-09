@@ -51,6 +51,8 @@
                         </span>
                     @enderror
                     </div> <!-- form-group// --> 
+                    <div class="row">
+                        <div class="col-md-6">
                     <div class="form-group"> 
                     <div class="checkbox">
                       
@@ -58,25 +60,23 @@
                             <input class="form-check-input" type="checkbox" name="remember" id="remember" {{ old('remember') ? 'checked' : '' }}>
                             {{__('login.rememberme')}}
                         </label>
-                      
                     </div> <!-- checkbox .// -->
                     </div> <!-- form-group// -->  
+                        </div>
+                    <div class="col-md-6 text-right">
+                        <a class="btn btn-link" href="{{ route('password.request',app()->getLocale()) }}">
+                            {{__('login.forgot')}} ?
+                        </a>
+                        </div> 
+                    </div>  
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
                                 <button type="submit" class="primary-btn load-more pbtn-2 ">
-                                    {{ __('header.login') }}
+                                    {{ __('login.loginbtn') }}
                                 </button>
                             </div> <!-- form-group// -->
-                        </div>
-                        {{-- <div class="col-md-6 text-right">
-                            
-                            @if (Route::has('password.request'))
-                        <a class="btn btn-link" href="{{ route('password.request') }}">
-                            {{ __('Forgot Password?') }}
-                        </a>
-                    @endif
-                        </div>                                             --}}
+                        </div>                                         
                     </div>                                                        
                 </form>
                 </article>

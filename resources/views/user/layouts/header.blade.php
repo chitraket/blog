@@ -34,10 +34,11 @@
                         <i class="fa fa-user-circle fa-lg pr-2" aria-hidden="true"></i>{{ Auth::user()->name }}
                       </a>
                       <div class="dropdown-menu">
+                        <a class="dropdown-item" href="{{ route('user.setting',app()->getLocale()) }}">{{ __('header.setting') }}</a>
                         <a class="dropdown-item" href="{{ route('logout',app()->getLocale()) }}"
                         onclick="event.preventDefault();
                                       document.getElementById('logout-form').submit();">
-                         {{ __('Logout') }}
+                         {{ __('header.logout') }}
                      </a>
                      <form id="logout-form" action="{{ route('logout',app()->getLocale()) }}" method="POST" style="display: none;">
                          @csrf

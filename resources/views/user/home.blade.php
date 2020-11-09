@@ -5,8 +5,10 @@
 <link rel="stylesheet" href="{{ asset('admin/plugins/toastr/toastr.css') }}">
 <link rel="stylesheet" href="{{ asset('admin/plugins/toastr/toastr.min.css') }}">
 @endsection
+
 @section('main-content')
     <!-- start banner Area -->
+    @include('includes.messages')
     @if (isset($popular_posts) && !empty($popular_posts))
     <section class="banner-area relative" id="home" data-parallax="scroll" data-image-src="{{ url('images/post_1920X820/' . $popular_posts->image) }}">
         <div class="overlay-bg overlay"></div>

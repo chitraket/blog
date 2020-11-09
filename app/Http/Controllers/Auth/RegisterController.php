@@ -38,7 +38,11 @@ class RegisterController extends Controller
     {
         App::setLocale($request->locale);
         session()->put('locale', $request->locale);
-        session()->put('getback', url()->previous());
+        $urlPrevious = url()->previous();
+        $urlBase = url()->to('/',$request->locale);
+        if(($urlPrevious != $urlBase . '/login') && ($urlPrevious != $urlBase . '/register') && ($urlPrevious != $urlBase . '/password/reset') && (substr($urlPrevious, 0, strlen($urlBase)) === $urlBase)){
+           $request->session()->put('url.intended', $urlPrevious);
+        }
         return view('auth.register');
     }
 
@@ -69,12 +73,20 @@ class RegisterController extends Controller
         }
         $user->name=$request->name;
         $user->email=$request->email;
-        $user->password=$request->password;
+        $user->password=Hash::make($request->password);
         if ($user->save()) {
-               Toastr::success('Register Successfully', 'Success');
+               Toastr::success('Register Successfully. :)');
                Auth::guard()->login($user);
+               if (session()->has('url.intended')) {
+                   return redirect($request->session()->get('url.intended'));
+               }
+               else
+               {
+                   return redirect('/',$request->locale);
+               }
            }
-           return redirect(session()->get('getback'));
+           return back();
+          
     }
     
 }

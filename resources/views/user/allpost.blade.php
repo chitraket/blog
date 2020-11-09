@@ -4,18 +4,17 @@
 <link rel="stylesheet" href="{{ asset('admin/plugins/toastr/toastr.css') }}">
 <link rel="stylesheet" href="{{ asset('admin/plugins/toastr/toastr.min.css') }}">
 @endsection
-@section('title'){{$category->name}} @endsection
+@section('title') {{ __('header.allpost')}} @endsection
 @section('main-content')
-@include('includes.messages')
         <!-- Start top-section Area -->
         <section class="top-section-area section-gap">
             <div class="container">
                 <div class="row justify-content-between align-items-center d-flex">
                     <div class="col-lg-8 top-left">
-                    <h1 class="text-white mb-20">{{ $category->name }}</h1>
+                    <h1 class="text-white mb-20">{{ __('header.allpost')}}</h1>
                         <ul>
                         <li><a href="{{ route('home',app()->getLocale()) }}">{{ __('header.home')}}</a><span class="lnr lnr-arrow-right"></span></li>
-                        <li><a href="{{ route('category',['locale'=>app()->getLocale(),'category'=>$category->slug])}}">{{ $category->name }} </a></li>
+                        <li><a href="{{ route('allpost',app()->getLocale()) }}">{{ __('header.allpost')}}</a></li>
                         </ul>
                     </div>
                 </div>
@@ -76,9 +75,9 @@
                     </div>                            
                 </div>
                 @if (isset($categorypost) && !$categorypost->isEmpty())
-                <div class="col-lg-4 sidebar-area">
+                <div class="col-lg-4 sidebar-area"> 
                     <div class="single_widget cat_widget">
-                    <h4 class="text-uppercase pb-20">{{__('category.category')}}</h4>
+                    <h4 class="text-uppercase pb-20">{{__('post.category')}}</h4>
                         <ul>
                             @foreach ($categorypost as $categoryposts)
                             @if (!$categoryposts->posts()->count()==0)
@@ -92,7 +91,7 @@
                     @endif
                     @if (isset($categorys) && !$categorys->isEmpty())
                     <div class="single_widget recent_widget">
-                    <h4 class="text-uppercase pb-20">{{__('category.recentposts')}}</h4>
+                    <h4 class="text-uppercase pb-20">{{__('tag.recentposts')}}</h4>
                             <div class="{{ $k }}recent-carusel">
                                 @foreach ($categorys as $item)
                                         <div class="item">
@@ -128,7 +127,7 @@
                     @endif  
                     @if (isset($tagpost) && !$tagpost->isEmpty())
                     <div class="single_widget tag_widget">
-                    <h4 class="text-uppercase pb-20">{{__('category.tag')}}</h4>
+                    <h4 class="text-uppercase pb-20">{{__('post.tag')}}</h4>
                         <ul>
                             @foreach ($tagpost as $tagposts)
                             <li>

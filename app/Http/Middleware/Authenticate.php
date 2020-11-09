@@ -16,10 +16,10 @@ class Authenticate extends Middleware
     {
         if (! $request->expectsJson()) {
             if (session()->get('locale')!=null) {
-                return route('login', session()->get('locale'));
+                return route('login',['locale' => session()->get('locale')] );
             }
             else{
-                return route('login','en');
+                return route('login',['locale' => 'en']);
             }
         }
     }

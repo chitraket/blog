@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Providers\RouteServiceProvider;
+use Brian2694\Toastr\Facades\Toastr;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
@@ -34,16 +35,11 @@ class LoginController extends Controller
         App::setLocale($request->locale);
         session()->put('locale', $request->locale);
         $urlPrevious = url()->previous();
-        $urlBase = url()->to('/');
-
-        if(($urlPrevious != $urlBase . '/login') && (substr($urlPrevious, 0, strlen($urlBase)) === $urlBase)){
-            session()->put('url.intended', $urlPrevious);
+        $urlBase = url()->to('/',$request->locale);
+        if(($urlPrevious != $urlBase . '/login') && ($urlPrevious != $urlBase . '/register') && ($urlPrevious != $urlBase . '/password/reset')  && (substr($urlPrevious, 0, strlen($urlBase)) === $urlBase)){
+           $request->session()->put('url.intended', $urlPrevious);
         }
         return view('auth.login');
-    }
-    protected  function redirectTo()
-    {
-        return url()->previous();
     }
     /**
      * Create a new controller instance.
@@ -53,9 +49,33 @@ class LoginController extends Controller
     public function __construct()
     {
         $this->middleware('guest')->except('logout');
-        $this->redirectTo=redirect()->back();
+        //$this->redirectTo=redirect()->back();
     }
 
+    public function login(Request $request)
+    {
+        $this->validate($request, [
+            'email'   => 'required|email',
+            'password' => 'required|min:8'
+          ]);
+          $remember_me = $request->has('remember_me') ? true : false; 
+          if (Auth::guard()->attempt(['email' => $request->email, 'password' => $request->password])) {
+            Toastr::success('Login Successfully. :)');
+            if (session()->has('url.intended')) {
+                return redirect($request->session()->get('url.intended'));
+            }
+            else
+            {
+                return redirect('/',$request->locale);
+            }
+          }
+          else
+          {
+            Toastr::error('Your email and password are wrong. :(');
+            return back();
+          }
+         // return redirect()->back()->withInput($request->only('email', 'remember'));
+    }
     public function logout(Request $request){
         Auth::guard()->logout();
         $request->session()->flush();

@@ -214,6 +214,7 @@
     <!-- /.content -->
   </div>
   <!-- /.content-wrapper -->
+  
   @endsection
 @section('footer')
 <!--Toastr-->

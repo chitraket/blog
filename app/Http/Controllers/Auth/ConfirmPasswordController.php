@@ -26,8 +26,9 @@ class ConfirmPasswordController extends Controller
      *
      * @var string
      */
-    protected $redirectTo = RouteServiceProvider::HOME;
-
+    public function redirectTo(){
+        return redirect('/',session()->get('locale'));
+    }
     /**
      * Create a new controller instance.
      *
@@ -35,6 +36,6 @@ class ConfirmPasswordController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth');
+        $this->middleware('guest');
     }
 }

@@ -18,21 +18,18 @@ Route::get('/',function(){
 });
 Route::group(['namespace'=> 'User','prefix'=>'{locale}','where'=>['locale'=>'[a-zA-Z]{2}','middleware'=>'setlocale']],function(){
     Route::get('/', 'HomeController@index')->name('home');
+    Route::get('post', 'PostController@allpost')->name('allpost');
     Route::get('post/{post}', 'PostController@post')->name('post');
     Route::get('tag/{tag}', 'PostController@tag')->name('tag');
     Route::get('category/{category}', 'PostController@category')->name('category');
     Route::get('/search','SearchController@search')->name('search');
     Route::get('profile/{username}','AuthorController@profile')->name('profile');
-
 });
 //Admin Routes
 Route::get('admin-login','Admin\Auth\LoginController@showLoginForm')->name('admin.login');
 Route::post('admin-login','Admin\Auth\LoginController@login');
-Route::post('/logout','Auth\LoginController@logout')->name('logout');
-Route::post('/register','Auth\RegisterController@logout')->name('register');
 
 Route::group(['namespace'=> 'Admin','middleware'=>'auth:admin'],function(){
-    
     Route::get('admin/home','HomeController@index')->name('admin.home');
     //Users Routes
     Route::resource('admin/user', 'UserController');
@@ -65,11 +62,17 @@ Route::group(['namespace'=> 'Admin','middleware'=>'auth:admin'],function(){
 });
 Route::group(['prefix'=>'{locale}','where'=>['locale'=>'[a-zA-Z]{2}','middleware'=>'setlocale']],function(){
     Auth::routes();
+    Route::get('/settings','Auth\SettingController@index')->name('user.setting');
 });
+
 Route::group(['middleware'=>['auth'],'prefix'=>'{locale}','where'=>['locale'=>'[a-zA-Z]{2}','middleware'=>'setlocale']], function (){
     Route::post('favorite/{post}/add','User\FavoriteController@add')->name('post.favorite');
     Route::post('comment/{post}','User\CommentController@store')->name('comment.store');
     Route::post('reply/{post}','User\ReplyController@store')->name('reply.store');
+    Route::post('/logout','Auth\LoginController@logout')->name('logout');
+    Route::put('profile-update','Auth\SettingController@updateProfile')->name('user.profile.update');
+    Route::put('password-update','Auth\SettingController@updatePassword')->name('user.passwords.update');
+    
  });
 
  View::composer('user.layouts.footer',function ($view) {

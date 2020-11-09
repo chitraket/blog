@@ -7,6 +7,8 @@ use App\Providers\RouteServiceProvider;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Brian2694\Toastr\Facades\Toastr;
+use App\Model\Admin\admin;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
 
@@ -45,13 +47,27 @@ class LoginController extends Controller
 
     public function login(Request $request)
     {
-        $this->validateLogin($request);
+        $this->validate($request, [
+            'email'   => 'required|email',
+            'password' => 'required|min:8'
+          ]);
+          $remember_me = $request->has('remember_me') ? true : false; 
+          if (Auth::guard('admin')->attempt(['email' => $request->email, 'password' => $request->password])) {
+            Toastr::success('Login Successfully. :)');
+                return redirect(route('admin.home'));
+          }
+          else
+          {
+            Toastr::error('Your email and password are wrong. :(');
+            return back();
+          }
+        // $this->validateLogin($request);
 
-        if ($this->attemptLogin($request)) {
-            return $this->sendLoginResponse($request);
-        }
+        // if ($this->attemptLogin($request)) {
+        //     return $this->sendLoginResponse($request);
+        // }
 
-        return $this->sendFailedLoginResponse($request);
+        // return $this->sendFailedLoginResponse($request);
     }
 
     protected function credentials(Request $request)

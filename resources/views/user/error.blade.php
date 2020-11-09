@@ -6,6 +6,7 @@
 <link rel="stylesheet" href="{{ asset('admin/plugins/toastr/toastr.min.css') }}">
 @endsection
 @section('main-content')
+@include('includes.messages')
 <section class="travel-area">
     <div class="container">
         <div class="row d-flex justify-content-center">

@@ -6,7 +6,7 @@
 <link rel="stylesheet" href="{{ asset('admin/plugins/toastr/toastr.min.css') }}">
 @endsection
 @section('main-content')
-
+@include('includes.messages')
         <!-- Start top-section Area -->
         <section class="top-section-area section-gap">
             <div class="container">

@@ -5,6 +5,8 @@ return[
     'tag'=>'टैग',
     'comment'=>'टिप्पणी',
     'recentposts'=>'हाल के पोस्ट',
+    'topposts'=>'शीर्ष पोस्ट',
+    'recommendedposts'=>'अनुशंसित पोस्ट', 
     'addcomment'=>'टिप्पणी जोड़ें',
     'enteryourcomment' => 'अपनी टिप्पणी दर्ज करें',
     'enteryourreply' => 'अपना उत्तर दर्ज करें',
