@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Brian2694\Toastr\Facades\Toastr;
 use Illuminate\Support\Facades\Auth;
-use App\Model\user\user;
+use App\Model\user\User;
 use App\Model\admin\admin;
 use App\Model\admin\role;
 use Illuminate\Http\Response;
