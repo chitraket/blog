@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Policies;
-use App\Model\Admin\admin;
+use App\Model\admin\admin;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
 class CategoryPolicy

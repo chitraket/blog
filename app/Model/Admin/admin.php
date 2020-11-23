@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Model\Admin;
+namespace App\Model\admin;
 
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -44,7 +44,7 @@ class admin extends Authenticatable
     }
     public function roles()
     {
-        return $this->belongsToMany('App\Model\Admin\role','admin_roles')->withTimestamps();
+        return $this->belongsToMany('App\Model\admin\role','admin_roles')->withTimestamps();
     }
     public function comments()
     {

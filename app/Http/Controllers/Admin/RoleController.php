@@ -4,8 +4,8 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Model\Admin\Permission;
-use App\Model\Admin\role;
+use App\Model\admin\Permission;
+use App\Model\admin\role;
 use Brian2694\Toastr\Facades\Toastr;
 use Illuminate\Support\Facades\Auth;
 class RoleController extends Controller

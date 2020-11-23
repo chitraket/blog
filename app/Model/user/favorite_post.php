@@ -17,6 +17,6 @@ class favorite_post extends Model
     }
     public function admin()
     {
-        return $this->belongsTo('App\Model\Admin\admin');
+        return $this->belongsTo('App\Model\admin\admin');
     }
 }
