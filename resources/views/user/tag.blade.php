@@ -12,10 +12,12 @@
             <div class="container">
                 <div class="row justify-content-between align-items-center d-flex">
                     <div class="col-lg-8 top-left">
-                    <h1 class="text-white mb-20">{{ $tag->name }}</h1>
+                        <a href="{{ route('tag',['locale'=>app()->getLocale(),'tag'=>$tag->slug])}}">
+                            <h1 class="text-white mb-20">{{ $tag->name }}</h1>
+                        </a>
                         <ul>
                         <li><a href="{{ route('home',app()->getLocale()) }}">{{ __('header.home')}}</a><span class="lnr lnr-arrow-right"></span></li>
-                        <li><a href="{{ route('tag',['locale'=>app()->getLocale(),'tag'=>$tag->slug])}}">{{ $tag->name }} </a></li>
+                        <li class="text-white">Tag</li>  
                         </ul>
                     </div>
                 </div>
@@ -37,8 +39,8 @@
                                     <img class="img-fluid"  src=" {{ url('images/post_360X220/' . $post->image) }} " alt="{{ $post->image }}">
                                     <div class="date mt-20 mb-20">{{ $post->created_at->format('d M Y') }}</div>
                                     <div class="detail">
-                                    <a href="{{ route('post',['locale'=>app()->getLocale(),'post'=>$post->slug]) }}"><h4 class="pb-20">{{ $post->title }}<br>
-                                    {{  $post->subtitle}}</h4></a>
+                                    <a href="{{ route('post',['locale'=>app()->getLocale(),'post'=>$post->slug]) }}"><h4>{{ $post->title }}</h4></a>
+                                    <p>{{ $post->subtitle}}</p>
                                     <p>{{Str::limit($post->meta_description, $limit =100, $end = '...')}}</p>
                                         <p class="footer ">
                                             <i class="fa fa-comment-o" aria-hidden="true"></i> {{ $post->comments->count() }} {{__('tag.comment')}}

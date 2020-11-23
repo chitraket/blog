@@ -56,7 +56,7 @@
                                 checked
                             @endif
                         @endforeach>
-                        <label for="customCheckbox{{$permission->id}}" class="custom-control-label">{{ $permission->name }}</label>
+                        <label for="customCheckbox{{$permission->id}}" class="custom-control-label pl-4">{{ $permission->name }}</label>
                         </div> 
                         @endforeach
                       </div>

@@ -22,10 +22,12 @@
         <div class="container">
             <div class="row justify-content-between align-items-center d-flex">
                 <div class="col-lg-8 top-left">
-                <h1 class="text-white mb-20 ">{{ $post->title}}</h1>
-                    <ul>
+                    <a href="{{ route('post',['locale'=>app()->getLocale(),'post'=>$post->slug]) }}">
+                        <h1 class="text-white mb-20 ">{{ $post->title}}</h1>
+                    </a>
+                <ul>
                     <li><a href="{{ route('home',app()->getLocale())}}">{{__('header.home')}}</a><span class="lnr lnr-arrow-right"></span></li>
-                        
+                    <li class="text-white">Category <span class="lnr lnr-arrow-right"></span></li>  
                         @foreach ($post->categories as $category)
                         @if ($loop->first) 
                         @else
@@ -418,7 +420,19 @@
                         @endforeach                                                                                          
                     </div>
                 </div>   
-                @endif                                              
+                @endif
+                @if (isset($dates) && !$dates->isEmpty())
+                <div class="single_widget cat_widget">
+                    <h4 class="text-uppercase pb-20">{{__('post.category')}}</h4>
+                    <ul>
+                        @foreach ($dates as $date)
+                                <li>
+                                <a href="{{ route('date',['locale'=>app()->getLocale(),'year'=>$date->year,'month'=>$date->month]) }}">{{ $date->month_name }} , {{ $date->year }} <span> {{ $date->data }}</span></a>
+                                </li>
+                        @endforeach                              
+                    </ul>
+                </div>
+                @endif                                               
             </div>
         </div>
     </div>    

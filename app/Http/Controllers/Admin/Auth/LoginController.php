@@ -52,8 +52,8 @@ class LoginController extends Controller
             'password' => 'required|min:8'
           ]);
           $remember_me = $request->has('remember_me') ? true : false; 
-          if (Auth::guard('admin')->attempt(['email' => $request->email, 'password' => $request->password])) {
-            Toastr::success('Login Successfully. :)');
+          if (Auth::guard('admin')->attempt(['email' => $request->email, 'password' => $request->password],$remember_me)) {
+                Toastr::success('Login Successfully. :)');
                 return redirect(route('admin.home'));
           }
           else

@@ -71,8 +71,8 @@
                 @endforeach
               </td>
               <td>
-                <div class="custom-control custom-switch">
-                <input type="checkbox" data-id="{{$user->id}}" class="custom-control-input toggle-class" id="customSwitch{{$user->id}}" data-onstyle="success" data-offstyle="danger" data-toggle="toggle" data-on="Active" data-off="InActive" {{ $user->status ? 'checked' : '' }}>
+                <div class="custom-control custom-switch ">
+                <input type="checkbox" data-id="{{$user->id}}" class="custom-control-input toggle-class pl-4" id="customSwitch{{$user->id}}"  {{ $user->status ? 'checked' : '' }}>
                   <label class="custom-control-label" for="customSwitch{{$user->id}}"></label>
                 </div>
               </td>
@@ -85,7 +85,7 @@
                  {{ csrf_field() }}
                  {{ method_field('DELETE') }}
               </form>
-            <a href="" onclick="deletetag({{$user->id}})"><i class="nav-icon fas fa-trash"> </i></a>
+            <a href="#" onclick="deletetag({{$user->id}})"><i class="nav-icon fas fa-trash"> </i></a>
               </td>
               @endcan
             </tr>

@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Policies;
-use App\Model\admin\admin;
+use App\Model\Admin\admin;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
 class TagPolicy

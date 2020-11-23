@@ -84,7 +84,7 @@
                     @if (old('status')==1 || $user->status == 1)
                         checked
                     @endif>
-                    <label for="customCheckbox100" class="custom-control-label">status</label>
+                    <label for="customCheckbox100" class="custom-control-label pl-4">status</label>
                     </div> 
                   </div>
                   </div>
@@ -97,7 +97,7 @@
                             checked
                         @endif
                     @endforeach>
-                    <label for="customCheckbox{{$role->id}}" class="custom-control-label">{{ $role->name }}</label>
+                    <label for="customCheckbox{{$role->id}}" class="custom-control-label pl-4">{{ $role->name }}</label>
                     </div> 
                     @endforeach
                   </div>

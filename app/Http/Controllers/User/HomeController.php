@@ -31,10 +31,10 @@ class HomeController extends Controller
                 foreach ($category as $categories) {
                     $categoriess=$categories->name;
                     $categorys= category::where('slug', $categories->slug)->first();
-                    $postss=$categorys->posts()->take(4);
+                    $postss=$categorys->posts()->take(4)->get();
                 }
                 $one_week_ago = Carbon::now()->subDays(6)->format('Y-m-d');
-                $dates = post::where(['created_at'=>'>='.$one_week_ago,'language'=>$locale])->take(10)->get();
+                $dates = post::where('created_at','>=',$one_week_ago)->where(['status'=>1,'language'=>$locale])->take(10)->get();
                 return view('user.home', compact('posts', 'user', 'popular_posts', 'postss', 'categoriess', 'dates'));
             }
             else

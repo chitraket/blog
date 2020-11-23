@@ -77,7 +77,7 @@
                           <input class="custom-control-input" type="checkbox" name="publish" id="customCheckbox1" value="1" @if ($post->status == 1)
                           {{'checked'}}
                         @endif>
-                          <label for="customCheckbox1" class="custom-control-label">Publish</label>
+                          <label for="customCheckbox1" class="custom-control-label pl-4">Publish</label>
                         </div>
                       </div>
                       @endcan

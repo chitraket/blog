@@ -72,7 +72,7 @@
                       <div class="form-group">
                         <div class="custom-control custom-checkbox pt-2">
                           <input class="custom-control-input" type="checkbox" name="publish" id="customCheckbox1" value="1">
-                          <label for="customCheckbox1" class="custom-control-label">Publish</label>
+                          <label for="customCheckbox1" class="custom-control-label pl-4">Publish</label>
                         </div>
                       </div>
                       @endcan
@@ -93,7 +93,7 @@
                         </div>
                         <div class="form-group">
                           <label>Post Category</label>
-                          <select class="select2" multiple="multiple" id="sub_category" data-placeholder="Post Category" style="width: 100%;" name="categories[]">
+                          <select class="select2" multiple="multiple" id="sub_category" data-placeholder="Post Category" name="categories[]" style="width: 100%;">
                             {{-- @foreach ($categories as $category)
                           <option value="{{$category->id}}">{{ $category->name}}</option>
                             @endforeach --}}

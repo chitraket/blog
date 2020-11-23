@@ -9,6 +9,6 @@ class tag extends Model
     //
     public function posts()
     {
-        return $this->belongsToMany('App\Model\user\post','post_tags')->where(['status'=>1,'language'=> session('locale')])->paginate(6);
+        return $this->belongsToMany('App\Model\user\post','post_tags')->where(['status'=>1,'language'=> session('locale')]);
     }
 }

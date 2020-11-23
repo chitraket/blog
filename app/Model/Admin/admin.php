@@ -40,7 +40,7 @@ class admin extends Authenticatable
 
     public function posts()
     {
-        return $this->hasMany('App\Model\user\post');
+        return $this->hasMany('App\Model\user\post')->where(['status'=>1,'language'=> session('locale')]);
     }
     public function roles()
     {

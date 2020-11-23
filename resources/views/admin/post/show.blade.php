@@ -74,7 +74,7 @@
               @can('posts.view', Auth::user())
               <td>
                 <div class="custom-control custom-switch">
-                <input type="checkbox" data-id="{{$post->id}}" class="custom-control-input toggle-class" id="customSwitch{{$post->id}}" data-onstyle="success" data-offstyle="danger" data-toggle="toggle" data-on="Active" data-off="InActive" {{ $post->status ? 'checked' : '' }}>
+                <input type="checkbox" data-id="{{$post->id}}" class="custom-control-input toggle-class" id="customSwitch{{$post->id}}"  {{ $post->status ? 'checked' : '' }}>
                 <label class="custom-control-label" for="customSwitch{{$post->id}}"></label>
                 </div>
               </td>
@@ -88,7 +88,7 @@
                  {{ csrf_field() }}
                  {{ method_field('DELETE') }}
               </form>
-            <a href="" onclick="deletetag({{$post->id}})"><i class="nav-icon fas fa-trash"> </i></a>
+            <a href="#" onclick="deletetag({{$post->id}})"><i class="nav-icon fas fa-trash"> </i></a>
               </td>
               @endcan
             </tr>

@@ -6,12 +6,11 @@
                   @if (isset($categories) && !$categories->isEmpty())
                     <h6>{{ __('footer.category')}}</h6>
                     <ul class="footer-nav">
-                        @foreach ($categories as $categories)
+                    @foreach ($categories as $categories)
                         @if (!$categories->posts()->count()==0)
                             <li><a href="{{ route('category',['locale'=>app()->getLocale(),'category'=>$categories->slug]) }}">{{ $categories->name }}</a></li>
                         @endif    
                     @endforeach
-                    
                     </ul>
                     @endif  
                 </div>

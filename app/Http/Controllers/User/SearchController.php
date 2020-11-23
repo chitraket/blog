@@ -16,24 +16,57 @@ class SearchController extends Controller
     {
         App::setLocale($request->locale);
         session()->put('locale', $request->locale);
-        $query = $request->input('query');
-        $posts = post::where('title','LIKE','%'.$query.'%')->paginate(6);
+        $locale=$request->locale;
+        $this->validate($request,[
+            'search'=>'required',
+        ]);
+        $query = $request->input('search');
+       $posts=post::where(['status'=>1,'language'=>$locale])->where('title','like','%'.$query.'%')
+        ->orwhereHas('tags', function($tag) use ($query,$locale) {
+            $tag->where(['name'=>$query,'language'=>$locale]);
+          })
+        ->orwhereHas('categories', function($categories) use ($query,$locale) {
+            $categories->where(['name'=>$query,'language'=>$locale]);
+          })
+        ->orwhereHas('admin', function($admin) use ($query) {
+            $admin->where(['name'=>$query]);
+          })
+        ->orderBy('created_at', 'desc')
+        ->paginate(6);
         $posts->appends($request->all());
-        $user=Auth::user();
-        $tagpost=tag::all();
-        $categorypost=category::all();
-        $tags=post::where('status',1)->orderBy('created_at','desc')->take(4)->get();
-        foreach($tags as $key => $items)
-            {
-                if($key>0)
-                {
-                        $k="active-";
-                }
-                else
-                {
-                        $k="";
+        if (count($posts) !=0) {
+            $user=Auth::user();
+            $tagpost=tag::all();
+            $categorypost=category::all();
+    $post_top=post::where(['status'=>1,'language'=>session('locale')])
+    ->withCount('comments')
+    ->withCount('favorite_post')
+    ->orderBy('view_count', 'desc')
+    ->orderBy('comments_count', 'desc')
+    ->orderBy('favorite_post_count', 'desc')
+    ->orderBy('created_at', 'desc')
+    ->take(4)->get();
+            $tags=post::where(['status'=>1,'language'=>$request->locale])->orderBy('created_at', 'desc')->take(4)->get();
+            foreach ($tags as $key => $items) {
+                if ($key>0) {
+                    $k="active-";
+                } else {
+                    $k="";
                 }
             }
-        return view('user.search',compact('posts','query','tagpost','categorypost','user','tags','k'));
+            foreach($post_top as $key=>$items){
+                if($key>0){
+                    $s="active-";
+                }
+                else{
+                    $s="";
+                }
+            }
+            return view('user.search', compact('posts', 'query', 'tagpost', 'categorypost', 'user', 'tags', 'k','post_top','s'));
+        }
+        else
+        {
+            return view('user.error');
+        }
     }
 }

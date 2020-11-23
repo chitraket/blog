@@ -22,6 +22,7 @@ Route::group(['namespace'=> 'User','prefix'=>'{locale}','where'=>['locale'=>'[a-
     Route::get('post/{post}', 'PostController@post')->name('post');
     Route::get('tag/{tag}', 'PostController@tag')->name('tag');
     Route::get('category/{category}', 'PostController@category')->name('category');
+    Route::get('post/{year}/{month}', 'PostController@date')->name('date');
     Route::get('/search','SearchController@search')->name('search');
     Route::get('profile/{username}','AuthorController@profile')->name('profile');
 });
@@ -83,6 +84,7 @@ Route::group(['middleware'=>['auth'],'prefix'=>'{locale}','where'=>['locale'=>'[
     ->orderBy('view_count', 'desc')
     ->orderBy('comments_count', 'desc')
     ->orderBy('favorite_post_count', 'desc')
+    ->orderBy('created_at', 'desc')
     ->take(5)->get();
     $view->with(['categories'=>$categories,'popular_posts'=>$popular_posts]);
 });

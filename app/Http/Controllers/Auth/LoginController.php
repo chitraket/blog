@@ -59,7 +59,7 @@ class LoginController extends Controller
             'password' => 'required|min:8'
           ]);
           $remember_me = $request->has('remember_me') ? true : false; 
-          if (Auth::guard()->attempt(['email' => $request->email, 'password' => $request->password])) {
+          if (Auth::guard()->attempt(['email' => $request->email, 'password' => $request->password],$remember_me)) {
             Toastr::success('Login Successfully. :)');
             if (session()->has('url.intended')) {
                 return redirect($request->session()->get('url.intended'));
@@ -74,7 +74,6 @@ class LoginController extends Controller
             Toastr::error('Your email and password are wrong. :(');
             return back();
           }
-         // return redirect()->back()->withInput($request->only('email', 'remember'));
     }
     public function logout(Request $request){
         Auth::guard()->logout();

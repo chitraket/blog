@@ -49,7 +49,7 @@
                 </ul>
                 <form method="GET" action="{{ route('search',app()->getLocale()) }}">
                   <div class="input-group stylish-input-group">
-                    <input type="text" class="form-control"  value="{{ isset($query) ? $query : '' }}" name="query" type="text" placeholder="{{__('header.search')}}"  required="">
+                    <input type="text" class="form-control"  value="{{ isset($query) ? $query : '' }}" name="search" type="text" placeholder="{{__('header.search')}}"  required />
                     <span class="input-group-addon ">
                         <button type="submit" class="border-0 "><span class="lnr lnr-magnifier"></span></button>  
                     </span>

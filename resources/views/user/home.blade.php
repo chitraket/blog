@@ -15,10 +15,10 @@
         <div class="container">
             <div class="row fullscreen">
                 <div class="banner-content d-flex align-items-center col-lg-12 col-md-12">
-                    <h1>
-                        {{$popular_posts->title }} <br>
-                        {{$popular_posts->subtitle}}								
-                    </h1>
+                    <a href="{{ route('post',['locale'=>app()->getLocale(),'post'=>$popular_posts->slug]) }}">
+                        <h1>{{$popular_posts->title }}</h1>
+                        <h3 class="text-white">{{$popular_posts->subtitle}}</h3>
+                    </a>
                 </div>	
                 <div class="head-bottom-meta d-flex justify-content-between align-items-end col-lg-12">
                     <div class="col-lg-6 flex-row d-flex meta-left no-padding">
@@ -46,7 +46,9 @@
                     </div>
                     <div class="col-lg-6 flex-row d-flex meta-right no-padding justify-content-end">
                         <div class="user-meta">
+                            <a href="{{ route('profile',['locale'=>app()->getLocale(),'username'=>$popular_posts->admin->username])}}">
                         <h4 class="text-white">{{ $popular_posts->admin->name }}</h4>
+                            </a>
                             <p>{{ $popular_posts->created_at->format('d M Y H:i:s')}}</p>
                         </div>
                         <img class="img-fluid user-img "  src="{{ url('images/admin_40X40/' . $popular_posts->admin->image) }}" alt="">
@@ -78,6 +80,7 @@
             <img class="thumbnail"  src="{{ url('images/post_360X220/' . $post->image) }}" alt="{{$post->image}}">
                 <p class="date">{{ $post->created_at->format('d M Y')}}</p>
             <h4><a href="{{ route('post',['locale'=>app()->getLocale(),'post'=>$post->slug]) }}">{{ $post->title }}</a></h4>
+            <p class="mt-0">{{ $post->subtitle}}</p>
             <p>{{Str::limit($post->meta_description, $limit =100, $end = '...')}}</p>
             <p>{{ $post->created_at->diffForHumans() }}
                 <span class="pull-right">
@@ -182,7 +185,8 @@
             <div class="col-lg-3 col-md-6 single-fashion">
             <img class="img-fluid" src="{{ url('images/post_263X180/' . $posts->image) }}" alt="{{ $posts->image }}">
                 <p class="date">{{ $posts->created_at->format('d M y')}}</p>
-                <h4><a href="{{ route('post',['locale'=>app()->getLocale(),'post'=>$posts->slug]) }}">{{ $posts->title }}<br>{{ $posts->subtitle}}</a></h4>
+                <a href="{{ route('post',['locale'=>app()->getLocale(),'post'=>$posts->slug]) }}"><h4 class="mb-0">{{ $posts->title }}</h4></a>
+                <p class="mt-0">{{ $posts->subtitle}}</p>
                 <p>
                     {{Str::limit($posts->meta_description, $limit =50, $end = '...')}}
                 </p>
