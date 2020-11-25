@@ -21,7 +21,7 @@ class SearchController extends Controller
             'search'=>'required',
         ]);
         $query = $request->input('search');
-       $posts=post::where(['status'=>1,'language'=>$locale])->where('title','like','%'.$query.'%')
+   return    $posts=post::where(['status'=>1,'language'=>$locale])->where('title','like','%'.$query.'%')
         ->orwhereHas('tags', function($tag) use ($query,$locale) {
             $tag->where(['name'=>$query,'language'=>$locale]);
           })
@@ -68,5 +68,13 @@ class SearchController extends Controller
         {
             return view('user.error');
         }
+    }
+    public function autocomplete(Request $request)
+    {
+        $data = post::select("title as name","image as img","meta_description as desc")
+                    ->where("title","LIKE","%{$request->input('query')}%")
+                    ->get();
+
+        return response()->json($data);
     }
 }

@@ -82,7 +82,7 @@ class PostController extends Controller
             $file = $request->file('image');
             $extension = $file->getClientOriginalExtension();
             $filename = md5(time()).'.'.$extension;
-            $destinationPath = public_path('/images');
+            $destinationPath ='../public/images';
             $imgx = Image::make($file->path());
             $imgx->resize(1920,820)->save($destinationPath.'/post_1920X820/'.$filename);
             $imgx->resize(752,353)->save($destinationPath.'/post_752X353/'.$filename);
@@ -120,7 +120,7 @@ class PostController extends Controller
 				  // resize if required
 				  /* ->resize(300, 200) */
 				  ->encode($mimetype, 100) 	// encode file to the specified mimetype
-				  ->save(public_path($filepath));
+				  ->save('../public'.$filepath);
 				
 				$new_src = asset($filepath);
 				$img->removeAttribute('src');
@@ -191,19 +191,19 @@ class PostController extends Controller
 
 
         if ($request->hasfile('image')){
-            $filenames[] = public_path().'/images/post_1920X820/'.$post->image;
-            $filenames[] = public_path().'/images/post_752X353/'.$post->image;
-            $filenames[] = public_path().'/images/post_360X220/'.$post->image;
-            $filenames[] = public_path().'/images/post_302X183/'.$post->image;
-            $filenames[] = public_path().'/images/post_263X180/'.$post->image;
-            $filenames[] = public_path().'/images/post_195X180/'.$post->image;
-            $filenames[] = public_path().'/images/post_195X180/'.$post->image;
-            $filenames[] = public_path().'/images/post_62X62/'.$post->image;
+            $filenames[] = '../public/images/post_1920X820/'.$post->image;
+            $filenames[] = '../public/images/post_752X353/'.$post->image;
+            $filenames[] = '../public/images/post_360X220/'.$post->image;
+            $filenames[] = '../public/images/post_302X183/'.$post->image;
+            $filenames[] = '../public/images/post_263X180/'.$post->image;
+            $filenames[] = '../public/images/post_195X180/'.$post->image;
+            $filenames[] = '../public/images/post_195X180/'.$post->image;
+            $filenames[] = '../public/images/post_62X62/'.$post->image;
             File::delete($filenames);
             $file = $request->file('image');
             $extension = $file->getClientOriginalExtension();
             $filename = md5(time()).'.'.$extension;
-            $destinationPath = public_path('/images');
+            $destinationPath = '../public/images';
             $imgx = Image::make($file->path());
             $imgx->resize(1920,820)->save($destinationPath.'/post_1920X820/'.$filename);
             $imgx->resize(752,353)->save($destinationPath.'/post_752X353/'.$filename);
@@ -251,7 +251,7 @@ class PostController extends Controller
 				  // resize if required
 				  /* ->resize(300, 200) */
 				  ->encode($mimetype, 100) 	// encode file to the specified mimetype
-				  ->save(public_path($filepath));
+				  ->save('../public'.$filepath);
 				
 				$new_src = asset($filepath);
 				$img->removeAttribute('src');
@@ -296,7 +296,7 @@ class PostController extends Controller
             $extension = $request->file('upload')->getClientOriginalExtension();
             $fileName = $fileName.'_'.time().'.'.$extension;
         
-            $request->file('upload')->move(public_path('images'), $fileName);
+            $request->file('upload')->move('../public/images', $fileName);
    
             $CKEditorFuncNum = $request->input('CKEditorFuncNum');
             $url = asset('images/'.$fileName); 

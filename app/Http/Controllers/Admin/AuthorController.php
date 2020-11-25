@@ -74,7 +74,7 @@ class AuthorController extends Controller
             $file = $request->file('image');
             $extension = $file->getClientOriginalExtension();
             $filename = md5(time()).'.'.$extension;
-            $destinationPath = public_path('/images');
+            $destinationPath = '../public/images';
             $imgx = Image::make($file->path());
             $imgx->resize(123,122)->save($destinationPath.'/admin_123X122/'.$filename);
             $imgx->resize(62,62)->save($destinationPath.'/admin_40X40/'.$filename);
@@ -137,8 +137,8 @@ class AuthorController extends Controller
         if ($request->hasfile('image')){
             if($user->image != "default.png")
             {
-                $filenames[] = public_path().'/images/admin_123X122/'.$user->image;
-                $filenames[] = public_path().'/images/admin_40X40/'.$user->image;
+                $filenames[] = '../public/images/admin_123X122/'.$user->image;
+                $filenames[] = '../public/images/admin_40X40/'.$user->image;
                 File::delete($filenames);
             }
             else
@@ -148,7 +148,7 @@ class AuthorController extends Controller
             $file = $request->file('image');
             $extension = $file->getClientOriginalExtension();
             $filename = md5(time()).'.'.$extension;
-            $destinationPath = public_path('/images');
+            $destinationPath = '../public/images';
             $imgx = Image::make($file->path());
             $imgx->resize(123,122)->save($destinationPath.'/admin_123X122/'.$filename);
             $imgx->resize(40,40)->save($destinationPath.'/admin_40X40/'.$filename);
@@ -181,8 +181,8 @@ class AuthorController extends Controller
         $user=admin::where('id',$id)->first();
         if($user->image != "default.png")
         {
-            $filenames[] = public_path().'/images/admin_123X122/'.$user->image;
-            $filenames[] = public_path().'/images/admin_40X40/'.$user->image;
+            $filenames[] = '../public/images/admin_123X122/'.$user->image;
+            $filenames[] = '../public/images/admin_40X40/'.$user->image;
             File::delete($filenames);
             $user->delete();
         }

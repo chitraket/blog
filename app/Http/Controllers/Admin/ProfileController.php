@@ -7,7 +7,9 @@ use Illuminate\Http\Request;
 use Brian2694\Toastr\Facades\Toastr;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\File;
 use App\Model\admin\admin;
+use Image;
 
 class ProfileController extends Controller
 {
@@ -30,8 +32,8 @@ class ProfileController extends Controller
         if ($request->hasfile('image')){
             if($user->image != "default.png")
             {
-                $filenames[] = public_path().'/images/admin_123X122/'.$user->image;
-                $filenames[] = public_path().'/images/admin_40X40/'.$user->image;
+                $filenames[] = '../public/images/admin_123X122/'.$user->image;
+                $filenames[] = '../public/images/admin_40X40/'.$user->image;
                 File::delete($filenames);
             }
             else
@@ -41,7 +43,7 @@ class ProfileController extends Controller
             $file = $request->file('image');
             $extension = $file->getClientOriginalExtension();
             $filename = md5(time()).'.'.$extension;
-            $destinationPath = public_path('/images');
+            $destinationPath = '../public/images';
             $imgx = Image::make($file->path());
             $imgx->resize(123,122)->save($destinationPath.'/admin_123X122/'.$filename);
             $imgx->resize(40,40)->save($destinationPath.'/admin_40X40/'.$filename);
