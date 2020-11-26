@@ -10,7 +10,7 @@
       <!-- Sidebar user panel (optional) -->
       <div class="user-panel mt-3 pb-3 mb-3 d-flex">
         <div class="image">
-        <img src="{{ url('storage/images/admin_40X40/'.Auth::user()->image) }}" class="img-circle elevation-2" alt="{{ Auth::user()->image }}">
+        <img src="{{ Storage::disk('local')->url('images/admin_40X40/'.Auth::user()->image) }}" class="img-circle elevation-2" alt="{{ Auth::user()->image }}">
         </div>
         <div class="info text-center">
         <a href="{{ route('settings') }}" class="d-block">{{ Auth::user()->name }}
