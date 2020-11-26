@@ -12,7 +12,7 @@
         <div class="row d-flex justify-content-center">
             <div class="menu-content pb-10 col-lg-8">
                 <div class="title text-center">
-                <img class="img-fluid d-flex  mr-3" src="{{ url('images/error-not-found-page.png') }} " alt="error-not-found-page.png">
+                <img class="img-fluid d-flex  mr-3" src="{{ url('images/error-not-found-page.png') }}" alt="">
                 <h1 class="mb-10 m-2">{{__('error.errors')}} :(</h1>
                 </div>
             </div>
