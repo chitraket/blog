@@ -11,7 +11,8 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
-use Image;
+use Illuminate\Support\Facades\Storage;
+use Intervention\Image\Facades\Image;
 use App;
 class RegisterController extends Controller
 {
@@ -64,13 +65,17 @@ class RegisterController extends Controller
             'profile_picture'=>['required','mimes:jpeg,png,jpg'],
         ]);
         $user=new User;
+        $image = $request->file('profile_picture');
         if ($request->hasfile('profile_picture')) {
-            $filename = md5(time()).'.'.$request->file('profile_picture')->getClientOriginalExtension();
-            $destinationPath = public_path('/images');
-            $imgx = Image::make($request->file('profile_picture')->path());
-            $imgx->resize(62,62)->save($destinationPath.'/user_62X62/'.$filename);
-            $user->image=$filename;
+            if (isset($image)) {
+                $imageName  = md5(time()).'.'.$image->getClientOriginalExtension();
+                $postImage1 = Image::make($image)->resize(62, 62)->encode();
+                Storage::disk('public')->put('images/user_62X62/'.$imageName, $postImage1);
+            } else {
+                $imageName = "default.png";
+            }
         }
+        $user->image=$imageName;
         $user->name=$request->name;
         $user->email=$request->email;
         $user->password=Hash::make($request->password);

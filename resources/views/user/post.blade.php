@@ -50,7 +50,7 @@
             <div class="col-lg-8">
                 <div class="single-page-post">
                     @if (!empty($post->image))
-                        <img class="img-fluid" src="{{ url('images/post_752X353/' . $post->image) }}" alt="{{ $post->image}} ">
+                        <img class="img-fluid" src="{{  Storage::disk('local')->url('images/post_752X353/' . $post->image) }}" alt="{{ $post->image}} ">
                     @endif
                     <div class="top-wrapper ">
                         <div class="row d-flex justify-content-between">
@@ -65,7 +65,7 @@
                                 <h3>{{ $post->created_at->diffForHumans() }}</h3>
                                 </div>
                                 <div class="user-img">
-                                    <img  src="{{ url('images/admin_40X40/' . $post->admin->image) }}" alt="">
+                                    <img  src="{{  Storage::disk('local')->url('images/admin_40X40/' . $post->admin->image) }}" alt="">
                                 </div>
                             </div>
                         </div>
@@ -130,7 +130,7 @@
                                 @if (isset($previous))
                                 <div class="col-sm-6 nav-left justify-content-start d-flex">
                                     <div class="thumb">
-                                        <img src="{{ url('images/post_62X62/' . $previous->image) }}" alt="">
+                                        <img src="{{  Storage::disk('local')->url('images/post_62X62/' . $previous->image) }}" alt="">
                                     </div>
                                     <div class="details">
                                         <p>Prev Post</p>
@@ -149,7 +149,7 @@
                                     <h4><a href="{{ route('post',['locale'=>app()->getLocale(),'post'=>$next->slug]) }}">{{ $next->title }}</a></h4>
                                     </div>             
                                     <div class="thumb">
-                                    <img  src="{{ url('images/post_62X62/' . $next->image) }}" alt="{{ $next->image }}">
+                                    <img  src="{{  Storage::disk('local')->url('images/post_62X62/' . $next->image) }}" alt="{{ $next->image }}">
                                     </div>                         
                                 </div>
                                     @else
@@ -179,7 +179,7 @@
                                 <div class="single-comment justify-content-between d-flex">
                                     <div class="user justify-content-between d-flex">
                                         <div class="thumb">
-                                            <img  src="{{ url('images/user_62X62/' . $comment->user->image) }}" alt="">
+                                            <img  src="{{  Storage::disk('local')->url('images/user_62X62/' . $comment->user->image) }}" alt="">
                                         </div>
                                         <div class="desc">
                                             <h5><a href="#">{{$comment->user->name}}</a></h5>
@@ -225,7 +225,7 @@
                                     <div class="single-comment justify-content-between d-flex">
                                         <div class="user justify-content-between d-flex">
                                             <div class="thumb">
-                                                <img  src="{{ url('images/user_62X62/' . $rep->user->image) }}" alt="">
+                                                <img  src="{{  Storage::disk('local')->url('images/user_62X62/' . $rep->user->image) }}" alt="">
                                             </div>
                                             <div class="desc">
                                             <h5><a href="#">{{ $rep->user->name }}</a></h5>
@@ -280,7 +280,7 @@
             
             <div class="col-lg-4 sidebar-area ">
                 <div class="single_widget about_widget">
-                    <img  class="img-rounded" src="{{ url('images/admin_123X122/' . $post->admin->image) }}" alt="">
+                    <img  class="img-rounded" src="{{  Storage::disk('local')->url('images/admin_123X122/' . $post->admin->image) }}" alt="">
                     <a href="{{ route('profile',['locale'=>app()->getLocale(),'username'=>$post->admin->username])}}"> <h2 class="">{{ $post->admin->name }}</h2></a>
                     <p>
                         {{$post->admin->about}}
@@ -296,7 +296,7 @@
                     <div class="{{ $k }}recent-carusel">
                         @foreach ($posts as $item)
                         <div class="item">
-                            <img src="{{ url('images/post_302X183/' . $item->image) }}" alt="{{ $item->image }}">  
+                            <img src="{{  Storage::disk('local')->url('images/post_302X183/' . $item->image) }}" alt="{{ $item->image }}">  
                         <a href="{{ route('post',['locale'=>app()->getLocale(),'post'=>$item->slug]) }}"><p class="mt-20 title ">{{ $item->title}} </p></a>    
                         <p>{{ $item->created_at->diffForHumans() }}
                                  <span>
@@ -345,7 +345,7 @@
                     <div class="{{ $s }}recent-carusel">
                         @foreach ($post_top as $item)
                         <div class="item">
-                            <img src="{{ url('images/post_302X183/' . $item->image) }}" alt="{{ $item->image }}">  
+                            <img src="{{  Storage::disk('local')->url('images/post_302X183/' . $item->image) }}" alt="{{ $item->image }}">  
                         <a href="{{ route('post',['locale'=>app()->getLocale(),'post'=>$item->slug]) }}"><p class="mt-20 title ">{{ $item->title}} </p></a>    
                         <p>{{ $item->created_at->diffForHumans() }}
                                  <span>
@@ -392,7 +392,7 @@
                     <div class="{{ $r }}recent-carusel">
                         @foreach ($random as $item)
                         <div class="item">
-                            <img src="{{ url('images/post_302X183/' . $item->image) }}" alt="{{ $item->image }}">  
+                            <img src="{{  Storage::disk('local')->url('images/post_302X183/' . $item->image) }}" alt="{{ $item->image }}">  
                         <a href="{{ route('post',['locale'=>app()->getLocale(),'post'=>$item->slug]) }}"><p class="mt-20 title ">{{ $item->title}} </p></a>    
                         <p>{{ $item->created_at->diffForHumans() }}
                                  <span>

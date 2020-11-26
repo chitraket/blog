@@ -10,7 +10,7 @@
     <!-- start banner Area -->
     @include('includes.messages')
     @if (isset($popular_posts) && !empty($popular_posts))
-    <section class="banner-area relative" id="home" data-parallax="scroll" data-image-src="{{ url('images/post_1920X820/' . $popular_posts->image) }}">
+    <section class="banner-area relative" id="home" data-parallax="scroll" data-image-src="{{  Storage::disk('local')->url('images/post_1920X820/' . $popular_posts->image) }}">
         <div class="overlay-bg overlay"></div>
         <div class="container">
             <div class="row fullscreen">
@@ -51,7 +51,7 @@
                             </a>
                             <p>{{ $popular_posts->created_at->format('d M Y H:i:s')}}</p>
                         </div>
-                        <img class="img-fluid user-img "  src="{{ url('images/admin_40X40/' . $popular_posts->admin->image) }}" alt="">
+                        <img class="img-fluid user-img "  src="{{  Storage::disk('local')->url('images/admin_40X40/' . $popular_posts->admin->image) }}" alt="">
                     </div>
                 </div>												
             </div>
@@ -77,7 +77,7 @@
             
             @foreach ($posts as $post)
             <div class="item single-cat">
-            <img class="thumbnail"  src="{{ url('images/post_360X220/' . $post->image) }}" alt="{{$post->image}}">
+            <img class="thumbnail"  src="{{  Storage::disk('local')->url('images/post_360X220/' . $post->image) }}" alt="{{$post->image}}">
                 <p class="date">{{ $post->created_at->format('d M Y')}}</p>
             <h4><a href="{{ route('post',['locale'=>app()->getLocale(),'post'=>$post->slug]) }}">{{ $post->title }}</a></h4>
             <p class="mt-0">{{ $post->subtitle}}</p>
@@ -128,7 +128,7 @@
             <div class="col-lg-6 travel-left">
                 @foreach ($postss as $post)
                 <div class="single-travel media pb-70">
-                        <img class="img-fluid d-flex  mr-3"  src="{{ url('images/post_195X180/' . $post->image) }}" alt="">
+                        <img class="img-fluid d-flex  mr-3"  src="{{  Storage::disk('local')->url('images/post_195X180/' . $post->image) }}" alt="">
                     <div class="dates">
                         <span>{{ $post->created_at->format('d')}}</span>
                         <p>{{ $post->created_at->format('M')}}</p>
@@ -183,7 +183,7 @@
         <div class="row">
             @foreach ( $dates as $posts)
             <div class="col-lg-3 col-md-6 single-fashion">
-            <img class="img-fluid" src="{{ url('images/post_263X180/' . $posts->image) }}" alt="{{ $posts->image }}">
+            <img class="img-fluid" src="{{  Storage::disk('local')->url('images/post_263X180/' . $posts->image) }}" alt="{{ $posts->image }}">
                 <p class="date">{{ $posts->created_at->format('d M y')}}</p>
                 <a href="{{ route('post',['locale'=>app()->getLocale(),'post'=>$posts->slug]) }}"><h4 class="mb-0">{{ $posts->title }}</h4></a>
                 <p class="mt-0">{{ $posts->subtitle}}</p>
@@ -282,7 +282,7 @@
         <div class="row d-flex justify-content-center">
             <div class="menu-content pb-10 col-lg-8">
                 <div class="title text-center">
-                <img class="img-fluid d-flex  mr-3" src="{{ url('images/error-not-found-page.png') }}" alt="">
+                <img class="img-fluid d-flex  mr-3" src="{{  Storage::disk('local')->url('images/error-not-found-page.png') }}" alt="">
                 <h1 class="mb-10 m-2">{{__('main.error')}} :(</h1>
                 </div>
             </div>

@@ -36,7 +36,7 @@
                             <div class="row justify-content-center">
                                 @foreach ($posts as $post)
                                 <div class="single-posts col-lg-6 col-sm-6 pb-4">
-                                    <img class="img-fluid"  src=" {{ url('images/post_360X220/' . $post->image) }} " alt="{{ $post->image }}">
+                                    <img class="img-fluid"  src=" {{  Storage::disk('local')->url('images/post_360X220/' . $post->image) }} " alt="{{ $post->image }}">
                                     <div class="date mt-20 mb-20">{{ $post->created_at->format('d M Y') }}</div>
                                     <div class="detail">
                                     <a href="{{ route('post',['locale'=>app()->getLocale(),'post'=>$post->slug]) }}"><h4>{{ $post->title }}</h4></a>
@@ -98,7 +98,7 @@
                         <div class="{{ $k }}recent-carusel">
                             @foreach ($tags as $item)
                             <div class="item">
-                            <img class="h-100 w-100" src=" {{ url('images/post_302X183/' . $item->image) }} " alt="{{ $item->image }}">
+                            <img class="h-100 w-100" src=" {{  Storage::disk('local')->url('images/post_302X183/' . $item->image) }} " alt="{{ $item->image }}">
                                 <a href="{{ route('post',['locale'=>app()->getLocale(),'post'=>$item->slug]) }}"><p class="mt-20 title">{{ $item->title }}</p></a>
                                 <p>{{ $item->created_at->diffForHumans() }}
                                     <span> 
@@ -145,7 +145,7 @@
                     <div class="{{ $s }}recent-carusel">
                         @foreach ($post_top as $item)
                         <div class="item">
-                            <img src="{{ url('images/post_302X183/' . $item->image) }}" alt="{{ $item->image }}">  
+                            <img src="{{  Storage::disk('local')->url('images/post_302X183/' . $item->image) }}" alt="{{ $item->image }}">  
                         <a href="{{ route('post',['locale'=>app()->getLocale(),'post'=>$item->slug]) }}"><p class="mt-20 title ">{{ $item->title}} </p></a>    
                         <p>{{ $item->created_at->diffForHumans() }}
                                  <span>

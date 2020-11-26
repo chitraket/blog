@@ -39,7 +39,7 @@
                                 @foreach ($posts as $post)
                                 <div class="single-posts col-lg-6 col-sm-6 pb-4">
                                     <a href="{{ route('post',['locale'=>app()->getLocale(),'post'=>$post->slug]) }}">
-                                    <img class="img-fluid"  src=" {{ url('images/post_360X220/' . $post->image) }} " alt="{{ $post->image }}"></a>
+                                    <img class="img-fluid"  src=" {{  Storage::disk('local')->url('images/post_360X220/' . $post->image) }} " alt="{{ $post->image }}"></a>
                                     <div class="date mt-20 mb-20">{{ $post->created_at->format('d M Y') }}</div>
                                     <div class="detail">
                                     <a href="{{ route('post',['locale'=>app()->getLocale(),'post'=>$post->slug]) }}"><h4>{{ $post->title }}<br></h4></a>
@@ -88,7 +88,7 @@
                 </div>
                 <div class="col-lg-4 sidebar-area">
                     <div class="single_widget about_widget">
-                        <img  class="img-rounded" src="{{ url('images/admin_123X122/' . $author->image) }}" alt="">
+                        <img  class="img-rounded" src="{{  Storage::disk('local')->url('images/admin_123X122/' . $author->image) }}" alt="">
                     <h2>{{ $author->name }}</h2>
                     <p>
                             {{$author->about}}
@@ -104,7 +104,7 @@
                         <div class="{{ $k }}recent-carusel">
                             @foreach ($tags as $item)
                             <div class="item">
-                            <img  src=" {{ url('images/post_302X183/' . $item->image) }} " alt="{{ $item->image }}">
+                            <img  src=" {{  Storage::disk('local')->url('images/post_302X183/' . $item->image) }} " alt="{{ $item->image }}">
                                 <a href="{{ route('post',['locale'=>app()->getLocale(),'post'=>$item->slug]) }}"><p class="mt-20 title ">{{ $item->title }}</p></a>
                                 <p>{{ $item->created_at->diffForHumans() }}
                                     <span> 
@@ -153,7 +153,7 @@
                         <div class="{{ $s }}recent-carusel">
                             @foreach ($post_top as $item)
                             <div class="item">
-                                <img src="{{ url('images/post_302X183/' . $item->image) }}" alt="{{ $item->image }}">  
+                                <img src="{{  Storage::disk('local')->url('images/post_302X183/' . $item->image) }}" alt="{{ $item->image }}">  
                             <a href="{{ route('post',['locale'=>app()->getLocale(),'post'=>$item->slug]) }}"><p class="mt-20 title ">{{ $item->title}} </p></a>    
                             <p>{{ $item->created_at->diffForHumans() }}
                                      <span>

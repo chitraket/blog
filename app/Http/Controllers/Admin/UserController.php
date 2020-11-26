@@ -8,6 +8,8 @@ use App\Model\user\user;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
+use Intervention\Image\Facades\Image;
 class UserController extends Controller
 {
     /**
@@ -58,13 +60,17 @@ class UserController extends Controller
         $user->name=$request->name;
         $user->email=$request->email;
         $user->password=Hash::make($request->password);
-        if ($request->hasfile('image')){
-            $file = $request->file('image');
-            $extension = $file->getClientOriginalExtension();
-            $filename = md5(time()).'.'.$extension;
-            $file->move(public_path().'\images',$filename);
-            $user->image=$filename;
+        $image = $request->file('image');
+        if ($request->hasfile('image')) {
+            if (isset($image)) {
+                $imageName  = md5(time()).'.'.$image->getClientOriginalExtension();
+                $postImage1 = Image::make($image)->resize(62, 62)->encode();
+                Storage::disk('public')->put('images/user_62X62/'.$imageName, $postImage1);
+            } else {
+                $imageName = "default.png";
+            }
         }
+        $user->image=$imageName;
        if ($user->save()) {
            Toastr::success('User Successfully Inserted', 'Success');
        }
@@ -116,22 +122,27 @@ class UserController extends Controller
             'image' => 'image|mimes:jpeg,png,jpg'
         ]);
         $user= user::find($id);
-        if ($request->hasfile('image')){
-            if($user->image != "default.png")
-            {
-            $filenames = public_path().'/images/'.$user->image;
-            File::delete($filenames);
+
+
+        $image = $request->file('image');
+        if ($request->hasfile('image')) {
+            if (isset($image)) {
+                $imageName  = md5(time()).'.'.$image->getClientOriginalExtension();
+                if ($user->image != "default.png") {
+                    if (Storage::disk('public')->exists('images/user_62X62/'.$user->image)) {
+                        Storage::disk('public')->delete('images/user_62X62/'.$user->image);
+                    }
+                } 
+                else {
+                }
+                $postImage1 = Image::make($image)->resize(62, 62)->encode();
+                Storage::disk('public')->put('images/user_62X62/'.$imageName, $postImage1);
+            } 
+            else {
+                $imageName = $user->image;
             }
-            else
-            {
-                
-            }
-            $file = $request->file('image');
-            $extension = $file->getClientOriginalExtension();
-            $filename = md5(time()).'.'.$extension;
-            $file->move(public_path().'\images',$filename);
-            $user->image=$filename;
-        } 
+        }
+        $user->image=$imageName;
         $user->name=$request->name;
         $user->email=$request->email;
         $user->password=Hash::make($request->password);

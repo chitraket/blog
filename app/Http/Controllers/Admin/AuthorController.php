@@ -10,7 +10,8 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\File;
 use Brian2694\Toastr\Facades\Toastr;
 use Illuminate\Support\Facades\Auth;
-use Image;
+use Illuminate\Support\Facades\Storage;
+use Intervention\Image\Facades\Image;
 class AuthorController extends Controller
 {
     /**
@@ -70,16 +71,19 @@ class AuthorController extends Controller
         $user->username=$request->username;
         $user->status=$request->status? : $request['status']=0;
         
-        if ($request->hasfile('image')){
-            $file = $request->file('image');
-            $extension = $file->getClientOriginalExtension();
-            $filename = md5(time()).'.'.$extension;
-            $destinationPath = '../public/images';
-            $imgx = Image::make($file->path());
-            $imgx->resize(123,122)->save($destinationPath.'/admin_123X122/'.$filename);
-            $imgx->resize(62,62)->save($destinationPath.'/admin_40X40/'.$filename);
-            $user->image=$filename;
+        $image = $request->file('image');
+        if ($request->hasfile('image')) {
+            if (isset($image)) {
+                $imageName  = md5(time()).'.'.$image->getClientOriginalExtension();
+                $postImage = Image::make($image)->resize(123, 122)->encode();
+                $postImage1 = Image::make($image)->resize(62, 62)->encode();
+                Storage::disk('public')->put('images/admin_123X122/'.$imageName, $postImage);
+                Storage::disk('public')->put('images/admin_40X40/'.$imageName, $postImage1);
+            } else {
+                $imageName = "default.png";
+            }
         }
+        $user->image=$imageName; 
        if ($user->save()) {
            Toastr::success('Admin Successfully Inserted', 'Success');
        }
@@ -134,27 +138,30 @@ class AuthorController extends Controller
             'username'=>'required|unique:admins,username,'.$id
         ]);
         $user= admin::find($id);
-        if ($request->hasfile('image')){
-            if($user->image != "default.png")
-            {
-                $filenames[] = '../public/images/admin_123X122/'.$user->image;
-                $filenames[] = '../public/images/admin_40X40/'.$user->image;
-                File::delete($filenames);
+        $image = $request->file('image');
+        if ($request->hasfile('image')) {
+            if (isset($image)) {
+                $imageName  = md5(time()).'.'.$image->getClientOriginalExtension();
+                if ($user->image != "default.png") {
+                    if (Storage::disk('public')->exists('images/admin_123X122/'.$user->image)) {
+                        Storage::disk('public')->delete('images/admin_123X122/'.$user->image);
+                    }
+                    if (Storage::disk('public')->exists('images/admin_40X40/'.$user->image)) {
+                        Storage::disk('public')->delete('images/admin_40X40/'.$user->image);
+                    }
+                } 
+                else {
+                }
+                $postImage = Image::make($image)->resize(123, 122)->encode();
+                $postImage1 = Image::make($image)->resize(62, 62)->encode();
+                Storage::disk('public')->put('images/admin_123X122/'.$imageName, $postImage);
+                Storage::disk('public')->put('images/admin_40X40/'.$imageName, $postImage1);
+            } 
+            else {
+                $imageName = $user->image;
             }
-            else
-            {
-                
-            }
-            $file = $request->file('image');
-            $extension = $file->getClientOriginalExtension();
-            $filename = md5(time()).'.'.$extension;
-            $destinationPath = '../public/images';
-            $imgx = Image::make($file->path());
-            $imgx->resize(123,122)->save($destinationPath.'/admin_123X122/'.$filename);
-            $imgx->resize(40,40)->save($destinationPath.'/admin_40X40/'.$filename);
-           // $file->move(public_path().'\images',$filename);
-            $user->image=$filename;
-        } 
+        }
+        $user->image=$imageName;
         $user->name=$request->name;
         $user->email=$request->email;
         $user->phone=$request->phone;
@@ -181,9 +188,12 @@ class AuthorController extends Controller
         $user=admin::where('id',$id)->first();
         if($user->image != "default.png")
         {
-            $filenames[] = '../public/images/admin_123X122/'.$user->image;
-            $filenames[] = '../public/images/admin_40X40/'.$user->image;
-            File::delete($filenames);
+            if (Storage::disk('public')->exists('images/admin_123X122/'.$user->image)) {
+                Storage::disk('public')->delete('images/admin_123X122/'.$user->image);
+            }
+            if (Storage::disk('public')->exists('images/admin_40X40/'.$user->image)) {
+                Storage::disk('public')->delete('images/admin_40X40/'.$user->image);
+            }
             $user->delete();
         }
         else

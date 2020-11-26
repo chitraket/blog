@@ -9,7 +9,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\File;
 use App\Model\admin\admin;
-use Image;
+use Illuminate\Support\Facades\Storage;
+use Intervention\Image\Facades\Image;
 
 class ProfileController extends Controller
 {
@@ -29,27 +30,28 @@ class ProfileController extends Controller
         ]);
       //  $user = admin::findOrFail(Auth::id());
         $user= admin::find(Auth::user()->id);
-        if ($request->hasfile('image')){
-            if($user->image != "default.png")
-            {
-                $filenames[] = '../public/images/admin_123X122/'.$user->image;
-                $filenames[] = '../public/images/admin_40X40/'.$user->image;
-                File::delete($filenames);
+        $image = $request->file('image');
+        if ($request->hasfile('image')) {
+            if (isset($image)) {
+                $imageName  = md5(time()).'.'.$image->getClientOriginalExtension();
+                if ($user->image != "default.png") {
+                    if (Storage::disk('public')->exists('images/admin_123X122/'.$user->image)) {
+                        Storage::disk('public')->delete('images/admin_123X122/'.$user->image);
+                    }
+                    if (Storage::disk('public')->exists('images/admin_40X40/'.$user->image)) {
+                        Storage::disk('public')->delete('images/admin_40X40/'.$user->image);
+                    }
+                } else {
+                }
+                $postImage = Image::make($image)->resize(123, 122)->encode();
+                $postImage1 = Image::make($image)->resize(62, 62)->encode();
+                Storage::disk('public')->put('images/admin_123X122/'.$imageName, $postImage);
+                Storage::disk('public')->put('images/admin_40X40/'.$imageName, $postImage1);
+            } else {
+                $imageName = $user->image;
             }
-            else
-            {
-                
-            }
-            $file = $request->file('image');
-            $extension = $file->getClientOriginalExtension();
-            $filename = md5(time()).'.'.$extension;
-            $destinationPath = '../public/images';
-            $imgx = Image::make($file->path());
-            $imgx->resize(123,122)->save($destinationPath.'/admin_123X122/'.$filename);
-            $imgx->resize(40,40)->save($destinationPath.'/admin_40X40/'.$filename);
-           // $file->move(public_path().'\images',$filename);
-            $user->image=$filename;
-        } 
+        }
+        $user->image=$imageName;
         $user->name=$request->name;
         $user->email=$request->email;
         $user->phone=$request->phone;

@@ -38,7 +38,7 @@
               <div class="card-body box-profile">
                 <div class="text-center">
                   <img class="profile-user-img img-fluid img-circle"
-                       src="{{ url('images/admin_123X122/' . Auth::user()->image) }}"
+                       src="{{ Storage::disk('local')->url('images/admin_40X40/'.Auth::user()->image) }}"
                        alt="User profile picture">
                 </div>
 
