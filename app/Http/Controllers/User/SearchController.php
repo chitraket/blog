@@ -21,7 +21,7 @@ class SearchController extends Controller
             'search'=>'required',
         ]);
         $query = $request->input('search');
-   return    $posts=post::where(['status'=>1,'language'=>$locale])->where('title','like','%'.$query.'%')
+       $posts=post::where(['status'=>1,'language'=>$locale])->where('title','like','%'.$query.'%')
         ->orwhereHas('tags', function($tag) use ($query,$locale) {
             $tag->where(['name'=>$query,'language'=>$locale]);
           })
