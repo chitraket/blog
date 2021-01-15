@@ -29,26 +29,26 @@ class SettingController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'image' => 'image|mimes:jpeg,png,jpg',
         ]);
-      //  $user = admin::findOrFail(Auth::id());
         $user=user::find(Auth::user()->id);
-        if ($request->hasfile('image')){
-            if($user->image != "default.png")
-            {
-                $filenames[] = public_path().'/images/user_62X62/'.$user->image;
-                File::delete($filenames);
+        $image = $request->file('image');
+        if ($request->hasfile('image')) {
+            if (isset($image)) {
+                $imageName  = md5(time()).'.'.$image->getClientOriginalExtension();
+                if ($user->image != "default.png") {
+                    if (Storage::disk('public')->exists('images/user_62X62/'.$user->image)) {
+                        Storage::disk('public')->delete('images/user_62X62/'.$user->image);
+                    }
+                } 
+                else {
+                }
+                $postImage1 = Image::make($image)->resize(62, 62)->encode();
+                Storage::disk('public')->put('images/user_62X62/'.$imageName, $postImage1);
+            } 
+            else {
+                $imageName = $user->image;
             }
-            else
-            {
-                
-            }
-            $file = $request->file('image');
-            $extension = $file->getClientOriginalExtension();
-            $filename = md5(time()).'.'.$extension;
-            $destinationPath = public_path('/images');
-            $imgx = Image::make($file->path());
-            $imgx->resize(62,62)->save($destinationPath.'/user_62X62/'.$filename);
-            $user->image=$filename;
-        } 
+        }
+        $user->image=$imageName; 
         $user->name=$request->name;
         if ($user->save()) {
             Toastr::success($user->name.' '.'Successfully Updated. :)', 'Success');

@@ -57,13 +57,16 @@
             <td>{{ $comments->user->name}}</td>
               <td>{{  $comments->user->email}}</td>
               <td>{{ $comments->comment}}</td>
+              
               @can('comment.delete', Auth::user())
               <td>
+              <a href="{{ route('comment.edit',$comments->id)}}" ><i class="nav-icon fas fa-reply pr-2"> </i></a>
               <form id="delete-form-{{$comments->id}}" action="{{ route('comment.destroy',$comments->id)}}" method="POST" style="display: none">
                  {{ csrf_field() }}
                  {{ method_field('DELETE') }}
               </form>
-            <a href="" onclick="deletetag({{$comments->id}})"><i class="nav-icon fas fa-trash"> </i></a>
+              <a href="" onclick="deletetag({{$comments->id}})"><i class="nav-icon fas fa-trash"> </i></a>
+            
               </td>
               @endcan 
             </tr> 

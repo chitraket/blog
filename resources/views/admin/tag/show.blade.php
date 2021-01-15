@@ -69,7 +69,7 @@
                 @endcan
                 @can('tags.delete', Auth::user())
                 <td>
-                  <form id="delete-form-{{$tag->id}}" action="{{ route('category.destroy',$tag->id)}}" method="POST" style="display: none">
+                  <form id="delete-form-{{$tag->id}}" action="{{ route('tag.destroy',$tag->id)}}" method="POST" style="display: none">
                      {{ csrf_field() }}
                      {{ method_field('DELETE') }}
                   </form>

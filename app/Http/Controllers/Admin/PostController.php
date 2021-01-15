@@ -9,12 +9,16 @@ use Illuminate\Http\Response;
 use App\Model\user\post;
 use App\Model\user\category;
 use App\Model\user\tag;
+use App\Model\admin\admin;
+use App\Model\admin\role;
 use Illuminate\Support\Facades\File;
-use Image;
+use Illuminate\Support\Facades\Storage;
+use Intervention\Image\Facades\Image;
+use App\Notifications\NewAuthorPost;
+use Illuminate\Support\Facades\Notification;
 
 class PostController extends Controller
 {
-    
     /**
      * Display a listing of the resource.
      *
@@ -24,7 +28,7 @@ class PostController extends Controller
     {
         if (Auth::user()->can('posts.create','posts.update','posts.delete')) {
             foreach (Auth::user()->roles as $role) {
-                if ($role->id == 5) {
+                if ($role->id == 4) {
                     $posts=post::all();
                 } else {
                     $user_id=Auth::user()->id;
@@ -62,15 +66,16 @@ class PostController extends Controller
     {
         //
         $this->validate($request,[
-            'title'=>'required',
-            'slug'=>'required',
+            'title'=>['required','unique:posts'],
             'body'=>'required',
-            'image' => 'required|image|mimes:jpeg,png,jpg'
+            'image' => 'required|image|mimes:jpeg,png,jpg',
+            'tags'=>'required',
+            'categories'=>'required'
         ]);
         $post= new post;
         $post->title=$request->title;
         $post->subtitle=$request->subtitle;
-        $post->slug=$request->slug;
+        $post->slug=str_slug($request->title);
         $post->language=$request->language;
         if (Auth::user()->can('posts.view')) {
             $post->status=$request->publish? : $request['status']=0;
@@ -78,21 +83,29 @@ class PostController extends Controller
         $post->meta_keyword=$request->metakeyword;
         $post->meta_description=$request->metadescription;
         $post->admin_id=Auth::user()->id; 
-        if ($request->hasfile('image')){
-            $file = $request->file('image');
-            $extension = $file->getClientOriginalExtension();
-            $filename = md5(time()).'.'.$extension;
-            $destinationPath ='../public/images';
-            $imgx = Image::make($file->path());
-            $imgx->resize(1920,820)->save($destinationPath.'/post_1920X820/'.$filename);
-            $imgx->resize(752,353)->save($destinationPath.'/post_752X353/'.$filename);
-            $imgx->resize(360,220)->save($destinationPath.'/post_360X220/'.$filename);
-            $imgx->resize(302,183)->save($destinationPath.'/post_302X183/'.$filename);
-            $imgx->resize(263,180)->save($destinationPath.'/post_263X180/'.$filename);
-            $imgx->resize(195,180)->save($destinationPath.'/post_195X180/'.$filename);
-            $imgx->resize(62,62)->save($destinationPath.'/post_62X62/'.$filename);
-            $post->image=$filename;
+        $image = $request->file('image');
+        if ($request->hasfile('image')) {
+            if (isset($image)) {
+                $imageName  = md5(time()).'.'.$image->getClientOriginalExtension();
+                $postImage = Image::make($image)->resize(1920, 820)->encode();
+                $postImage1 = Image::make($image)->resize(752, 353)->encode();
+                $postImage2 = Image::make($image)->resize(360, 220)->encode();
+                $postImage3 = Image::make($image)->resize(302, 183)->encode();
+                $postImage4 = Image::make($image)->resize(263, 180)->encode();
+                $postImage5 = Image::make($image)->resize(195, 180)->encode();
+                $postImage6 = Image::make($image)->resize(62, 62)->encode();
+                Storage::disk('public')->put('images/post_1920X820/'.$imageName, $postImage);
+                Storage::disk('public')->put('images/post_752X353/'.$imageName, $postImage1);
+                Storage::disk('public')->put('images/post_360X220/'.$imageName, $postImage2);
+                Storage::disk('public')->put('images/post_302X183/'.$imageName, $postImage3);
+                Storage::disk('public')->put('images/post_263X180/'.$imageName, $postImage4);
+                Storage::disk('public')->put('images/post_195X180/'.$imageName, $postImage5);
+                Storage::disk('public')->put('images/post_62X62/'.$imageName, $postImage6);
+            } else {
+                $imageName = "default.png";
+            }
         } 
+       $post->image=$imageName;
        $detail=$request->input('body');
 
         $dom = new \DomDocument();
@@ -117,10 +130,9 @@ class PostController extends Controller
 	
 				// @see http://image.intervention.io/api/
 				$image = Image::make($src)
-				  // resize if required
-				  /* ->resize(300, 200) */
+				  ->resize(752, 353)
 				  ->encode($mimetype, 100) 	// encode file to the specified mimetype
-				  ->save('../public'.$filepath);
+				  ->save(Storage::disk('public')->put($filepath));
 				
 				$new_src = asset($filepath);
 				$img->removeAttribute('src');
@@ -129,14 +141,19 @@ class PostController extends Controller
 		} // <!--endforeach
         
         
-		$post->body = $dom->saveHTML();
+        $post->body = $dom->saveHTML();
+        
 
-       
-        
-        
        if ($post->save()) {
         $post->tags()->sync($request->tags);
         $post->categories()->sync($request->categories);
+        foreach (Auth::user()->roles as $role) {
+            if ($role->id != 4) {
+                $role=role::where('id', 4)->first();
+                $user=$role->admin->where('status', 1)->all();
+                Notification::send($user, new NewAuthorPost($post));
+            }
+        }
            Toastr::success('Post Successfully Inserted', 'Success');
        }
         return redirect(route('post.index'));
@@ -181,42 +198,64 @@ class PostController extends Controller
     {
         //
         $this->validate($request,[
-            'title'=>'required',
-            'slug'=>'required',
+            'title'=>'required|unique:posts,title,'.$id,
             'body'=>'required',
             'image' => 'image|mimes:jpeg,png,jpg'
         ]);
 
         $post= post::find($id);
-
-
-        if ($request->hasfile('image')){
-            $filenames[] = '../public/images/post_1920X820/'.$post->image;
-            $filenames[] = '../public/images/post_752X353/'.$post->image;
-            $filenames[] = '../public/images/post_360X220/'.$post->image;
-            $filenames[] = '../public/images/post_302X183/'.$post->image;
-            $filenames[] = '../public/images/post_263X180/'.$post->image;
-            $filenames[] = '../public/images/post_195X180/'.$post->image;
-            $filenames[] = '../public/images/post_195X180/'.$post->image;
-            $filenames[] = '../public/images/post_62X62/'.$post->image;
-            File::delete($filenames);
-            $file = $request->file('image');
-            $extension = $file->getClientOriginalExtension();
-            $filename = md5(time()).'.'.$extension;
-            $destinationPath = '../public/images';
-            $imgx = Image::make($file->path());
-            $imgx->resize(1920,820)->save($destinationPath.'/post_1920X820/'.$filename);
-            $imgx->resize(752,353)->save($destinationPath.'/post_752X353/'.$filename);
-            $imgx->resize(360,220)->save($destinationPath.'/post_360X220/'.$filename);
-            $imgx->resize(302,183)->save($destinationPath.'/post_302X183/'.$filename);
-            $imgx->resize(263,180)->save($destinationPath.'/post_263X180/'.$filename);
-            $imgx->resize(195,180)->save($destinationPath.'/post_195X180/'.$filename);
-            $imgx->resize(62,62)->save($destinationPath.'/post_62X62/'.$filename);
-            $post->image=$filename;
-        } 
+        $image = $request->file('image');
+        if ($request->hasfile('image')) {
+            if (isset($image)) {
+                $imageName  = md5(time()).'.'.$image->getClientOriginalExtension();
+                if ($post->image != "default.png") {
+                    if (Storage::disk('public')->exists('images/post_1920X820/'.$post->image)) {
+                        Storage::disk('public')->delete('images/post_1920X820/'.$post->image);
+                    }
+                    if (Storage::disk('public')->exists('images/post_752X353/'.$post->image)) {
+                        Storage::disk('public')->delete('images/post_752X353/'.$post->image);
+                    }
+                    if (Storage::disk('public')->exists('images/post_360X220/'.$post->image)) {
+                        Storage::disk('public')->delete('images/post_360X220/'.$post->image);
+                    }
+                    if (Storage::disk('public')->exists('images/post_302X183/'.$post->image)) {
+                        Storage::disk('public')->delete('images/post_302X183/'.$post->image);
+                    }
+                    if (Storage::disk('public')->exists('images/post_263X180/'.$post->image)) {
+                        Storage::disk('public')->delete('images/post_263X180/'.$post->image);
+                    }
+                    if (Storage::disk('public')->exists('images/post_195X180/'.$post->image)) {
+                        Storage::disk('public')->delete('images/post_195X180/'.$post->image);
+                    }
+                    if (Storage::disk('public')->exists('images/post_62X62/'.$post->image)) {
+                        Storage::disk('public')->delete('images/post_62X62/'.$post->image);
+                    }
+                } 
+                else {
+                }
+                $postImage = Image::make($image)->resize(1920, 820)->encode();
+                $postImage1 = Image::make($image)->resize(752, 353)->encode();
+                $postImage2 = Image::make($image)->resize(360, 220)->encode();
+                $postImage3 = Image::make($image)->resize(302, 183)->encode();
+                $postImage4 = Image::make($image)->resize(263, 180)->encode();
+                $postImage5 = Image::make($image)->resize(195, 180)->encode();
+                $postImage6 = Image::make($image)->resize(62, 62)->encode();
+                Storage::disk('public')->put('images/post_1920X820/'.$imageName, $postImage);
+                Storage::disk('public')->put('images/post_752X353/'.$imageName, $postImage1);
+                Storage::disk('public')->put('images/post_360X220/'.$imageName, $postImage2);
+                Storage::disk('public')->put('images/post_302X183/'.$imageName, $postImage3);
+                Storage::disk('public')->put('images/post_263X180/'.$imageName, $postImage4);
+                Storage::disk('public')->put('images/post_195X180/'.$imageName, $postImage5);
+                Storage::disk('public')->put('images/post_62X62/'.$imageName, $postImage6);
+            } 
+            else {
+                $imageName = $post->image;
+            }
+            $post->image=$imageName;
+        }
         $post->title=$request->title;
         $post->subtitle=$request->subtitle;
-        $post->slug=$request->slug;
+        $post->slug=str_slug($request->title);
         if (Auth::user()->can('posts.view')) {
             $post->status=$request->publish? : $request['status']=0;
         }
@@ -244,14 +283,14 @@ class PostController extends Controller
 				
 				// Generating a random filename
 				$filename = uniqid();
-				$filepath = "/images/$filename.$mimetype";
+				$filepath = "images/$filename.$mimetype";
 	
 				// @see http://image.intervention.io/api/
 				$image = Image::make($src)
 				  // resize if required
-				  /* ->resize(300, 200) */
+				  ->resize(752, 353) 
 				  ->encode($mimetype, 100) 	// encode file to the specified mimetype
-				  ->save('../public'.$filepath);
+				  ->save(Storage::disk('public')->put($filepath));
 				
 				$new_src = asset($filepath);
 				$img->removeAttribute('src');
@@ -276,11 +315,42 @@ class PostController extends Controller
     public function destroy($id)
     {
         //
-        post::find($id)->delete();
+        if (Auth::user()->can('posts.delete')) {
+        $user=post::find($id);
+        if($user->image != "default.png")
+        {
+            if (Storage::disk('public')->exists('images/post_1920X820/'.$user->image)) {
+                Storage::disk('public')->delete('images/post_1920X820/'.$user->image);
+            }
+            if (Storage::disk('public')->exists('images/post_752X353/'.$user->image)) {
+                Storage::disk('public')->delete('images/post_752X353/'.$user->image);
+            }
+            if (Storage::disk('public')->exists('images/post_360X220/'.$user->image)) {
+                Storage::disk('public')->delete('images/post_360X220/'.$user->image);
+            }
+            if (Storage::disk('public')->exists('images/post_302X183/'.$user->image)) {
+                Storage::disk('public')->delete('images/post_302X183/'.$user->image);
+            }
+            if (Storage::disk('public')->exists('images/post_263X180/'.$user->image)) {
+                Storage::disk('public')->delete('images/post_263X180/'.$user->image);
+            }
+            if (Storage::disk('public')->exists('images/post_195X180/'.$user->image)) {
+                Storage::disk('public')->delete('images/post_195X180/'.$user->image);
+            }
+            if (Storage::disk('public')->exists('images/post_62X62/'.$user->image)) {
+                Storage::disk('public')->delete('images/post_62X62/'.$user->image);
+            }
+            $user->delete();
+        }
+        else
+        {
+            $user->delete();
+        }
         Toastr::success('Post Successfully Deleted', 'Success');
         return redirect()->back();
+    }
+    return redirect(route('post.index'));
     } 
-
     public function changeStatus(Request $request)
     {
         $user = post::find($request->user_id);
@@ -296,10 +366,10 @@ class PostController extends Controller
             $extension = $request->file('upload')->getClientOriginalExtension();
             $fileName = $fileName.'_'.time().'.'.$extension;
         
-            $request->file('upload')->move('../public/images', $fileName);
+            $request->file('upload')->move('../storage/app/public/images', $fileName);
    
             $CKEditorFuncNum = $request->input('CKEditorFuncNum');
-            $url = asset('images/'.$fileName); 
+            $url = asset('storage/images/'.$fileName); 
             $msg = 'Image uploaded successfully'; 
             $response = "<script>window.parent.CKEDITOR.tools.callFunction($CKEditorFuncNum, '$url', '$msg')</script>";
                
@@ -308,7 +378,7 @@ class PostController extends Controller
         }
     }
     public function postselect(Request $request)
-    {
+    {        
             $categories=category::where('language', $request->select_id)->get();
             $tags=tag::where('language', $request->select_id)->get();
             return response()->json(['category'=>$categories,'tag'=>$tags]);

@@ -46,13 +46,17 @@
             <tr>
               <th>No</th>
               <th>Post Name</th>
-              <th>Slug</th>
+              @foreach (Auth::user()->roles as $role)
+                  @if ($role->id == 4)
+              <th>Author</th>
+                  @endif
+              @endforeach
+              <th>Categorys</th>
+              <th>Tags</th>
               <th>View</th>
               <th>Comment</th>
               <th>Likes</th>
-              @can('posts.view', Auth::user())
               <th>Status</th>
-              @endcan
               @can('posts.update', Auth::user())
               <th>Edit</th>
               @endcan
@@ -62,23 +66,56 @@
             </tr>
             </thead>
             <tbody>
-            
               @foreach ($posts as $post)
               <tr>
             <td>{{ $loop->index + 1}}</td>
               <td>{{ $post->title}}</td>
-              <td>{{ $post->slug}}</td>
+              
+              @foreach (Auth::user()->roles as $role)
+                  @if ($role->id == 4)
+                  <td>
+                  @foreach ($post->admin->roles as $role)
+                            @if ($role->id == 4)
+                            <i class="nav-icon fas fa-user-shield mr-2"></i>  
+                            @else
+                            <i class="nav-icon fas fa-user mr-2"></i> 
+                            @endif
+                            @endforeach
+                        {{ $post->admin->name }}</td>
+                  @endif
+              @endforeach
+              
+              <td>
+                @foreach ($post->categories as $categorys)
+                  <span class="badge badge-primary">{{ $categorys->name }}</span>
+                @endforeach
+                </td>
+              <td>
+              @foreach ($post->tags as $tags)
+                <span class="badge badge-primary">{{ $tags->name }}</span>
+              @endforeach
+              </td>
               <td>{{ $post->view_count }}</td>
               <td>{{ $post->comments->count() }}</td>
               <td>{{ $post->favorite_post->count() }}</td>
+              
               @can('posts.view', Auth::user())
               <td>
-                <div class="custom-control custom-switch">
+                <div class="custom-control custom-switch ml-2">
                 <input type="checkbox" data-id="{{$post->id}}" class="custom-control-input toggle-class" id="customSwitch{{$post->id}}"  {{ $post->status ? 'checked' : '' }}>
                 <label class="custom-control-label" for="customSwitch{{$post->id}}"></label>
                 </div>
               </td>
+              @else
+              <td>
+                @if($post->status == 1)
+                <span class="badge badge-success">Published</span>
+                                      @else
+                <span class="badge badge-danger">Pending</span>
+                                      @endif
+                </td>
               @endcan
+              
               @can('posts.update', Auth::user())
               <td><a href="{{ route('post.edit',$post->id)}}"><i class="nav-icon fas fa-edit"></i></a></td>
               @endcan

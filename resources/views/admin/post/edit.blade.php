@@ -84,10 +84,6 @@
                     </div>
                     <div class="col-md-6">
                         <div class="form-group">
-                            <label for="exampleInputslug1">Post Slug</label>
-                        <input type="text" class="form-control" id="exampleInputslug1" name="slug" placeholder="Slug" value="{{ $post->slug }}">
-                        </div>
-                        <div class="form-group">
                           <label>Post Language</label>
                           <select class="form-control"  name="language" style="width: 100%;" id="sub_category_name">
                             <option value="en"

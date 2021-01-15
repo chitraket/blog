@@ -10,12 +10,21 @@
       <!-- Sidebar user panel (optional) -->
       <div class="user-panel mt-3 pb-3 mb-3 d-flex">
         <div class="image">
-          
-        <img src="{{ url('storage/images/admin_40X40/'.Auth::user()->image) }}" class="img-circle elevation-2" alt="{{ Auth::user()->image }}">
+          <img src="{{ Storage::disk('local')->url('/images/admin_40X40/'.Auth::user()->image) }}" class=" img-circle elevation-2" alt="User Image">
         </div>
         <div class="info text-center">
-        <a href="{{ route('settings') }}" class="d-block">{{ Auth::user()->name }}
+          
+        <a href="{{ route('settings') }}" class="d-block">
+          @foreach (Auth::user()->roles as $role)
+          @if ($role->id == 4)
+          <i class="nav-icon fas fa-user-shield mr-2 ml-1"></i>  
+          @else
+          <i class="nav-icon fas fa-user mr-2 ml-1"></i> 
+          @endif
+          @endforeach
+          {{ Auth::user()->name }}
         </a>
+
         </div>
       </div>
       <nav class="mt-2">
@@ -73,6 +82,17 @@
             </a>
           </li>  
           @endcan 
+          @can('favorite.delete',Auth::user())
+          <li class="nav-item {{ Request::is('admin/favorite*') ? 'has-treeview menu-open' : ''}}">
+            <a href="{{ route('favorite.index') }}" class="nav-link {{ Request::is('admin/favorite*') ? 'active' : ''}}">
+              <i class="nav-icon fas fa-heart"></i>
+              <p>
+                Favorite
+                <!--<span class="right badge badge-danger">New</span>-->
+              </p>
+            </a>
+          </li>  
+          @endcan 
           @can('users.create','users.update','users.delete',Auth::user())
           <li class="nav-item {{ Request::is('admin/user*') ? 'has-treeview menu-open' : ''}}">
             <a href="{{ route('user.index') }}" class="nav-link {{ Request::is('admin/user*') ? 'active' : ''}}">
@@ -121,7 +141,6 @@
             </ul>
           </li>
           @endcan
-          @can('users.create','users.update','users.delete',Auth::user())
           <li class="nav-item {{ Request::is('admin/settings*') ? 'has-treeview menu-open' : ''}}">
             <a href="{{ route('settings') }}" class="nav-link {{ Request::is('admin/settings*') ? 'active' : ''}}">
               <i class="nav-icon fas fa-cog"></i>
@@ -131,7 +150,6 @@
               </p>
             </a>
           </li>  
-          @endcan 
           <li class="nav-item">
             <a href="{{ route('admin.logout') }}" class="nav-link" onclick="event.preventDefault();
             document.getElementById('logout-form').submit();">

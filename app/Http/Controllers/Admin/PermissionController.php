@@ -53,7 +53,6 @@ class PermissionController extends Controller
         ]);
         $permission = new Permission;
         $permission->name=$request->name;
-        $permission->fors=$request->fors;
         if($permission->save())
         {
             Toastr::success('Permission Successfully Inserted', 'Success');
@@ -104,7 +103,6 @@ class PermissionController extends Controller
         ]);
         $permission=Permission::find($permission->id);
         $permission->name=$request->name;
-        $permission->fors=$request->fors;
         if($permission->save())
         {
             Toastr::success('Permission Successfully Updated', 'Success');
@@ -121,8 +119,11 @@ class PermissionController extends Controller
     public function destroy(Permission $permission)
     {
         //
-        Permission::find($permission->id)->delete();
-        Toastr::success('Permission Successfully Deleted', 'Success');
-        return redirect()->back();
+        if (Auth::user()->can('permissions.delete')) {
+            Permission::find($permission->id)->delete();
+            Toastr::success('Permission Successfully Deleted', 'Success');
+            return redirect()->back();
+        }
+        return redirect(route('permission.index'));        
     }
 }

@@ -38,7 +38,7 @@
               <div class="card-body box-profile">
                 <div class="text-center">
                   <img class="profile-user-img img-fluid img-circle"
-                       src="{{ url('storage/images/admin_123X122/'.Auth::user()->image) }}"
+                       src="{{ Storage::disk('local')->url('images/admin_123X122/' . Auth::user()->image) }}"
                        alt="User profile picture">
                 </div>
 
@@ -129,12 +129,12 @@
                             <input type="text" class="form-control" id="inputName" name="name" value="{{Auth::user()->name }}" placeholder="Name">
                           </div>
                         </div>
-                        <div class="form-group row">
+                        {{-- <div class="form-group row">
                           <label for="inputEmail" class="col-sm-2 col-form-label">Username</label>
                           <div class="col-sm-10">
                           <input type="text" class="form-control" id="inputEmail" name="username" value="{{ Auth::user()->username }}" placeholder="Username">
                           </div>
-                        </div>
+                        </div> --}}
                         <div class="form-group row">
                           <label for="inputName2" class="col-sm-2 col-form-label">Email</label>
                           <div class="col-sm-10">

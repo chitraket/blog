@@ -49,17 +49,6 @@
                           <input type="text" class="form-control" id="exampleInputtagtitle1" name="name" placeholder="Permission"  value="{{ $permissions->name }}"required>
                           </div>
                       </div>
-                      <div class="col-md-12">
-                        <div class="form-group">
-                          <label>Permission For</label>
-                          <select class="form-control select2" name="fors" style="width: 100%;">
-                            <option selected disabled>Select Permission For</option>
-                            <option value="user">User</option>
-                            <option value="post">Post</option>
-                            <option value="other">Other</option>
-                          </select>
-                        </div>
-                        </div>
                 </div>
                   </div>
                     <!-- /.card-body -->

@@ -14,7 +14,6 @@ class HomeController extends Controller
     //
     public function index($locale)
     {
-
         App::setLocale($locale);
         session()->put('locale', $locale);
         $posts=post::where(['status'=>1,'language'=>$locale])->orderBy('id', 'desc')->take(10)->get();

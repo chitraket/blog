@@ -25,7 +25,6 @@
         </div>
       </div><!-- /.container-fluid -->
     </section>
-
     <!-- Main content -->
     <section class="content">
       <div class="row">
@@ -49,28 +48,22 @@
                             <input type="text" class="form-control" id="exampleInputtagtitle1" name="title" placeholder="Tag Title" value="{{$tag->name}}">
                         </div>
                         <div class="form-group">
-                            <label for="exampleInputtagslug1">Tag Slug</label>
-                        <input type="text" class="form-control" id="exampleInputtagslug1" name="slug" placeholder="Tag Slug" value="{{$tag->slug}}">
-                        </div>
-                        <div class="form-group">
                           <label>Tag Language</label>
                           <select class="form-control"  name="language" style="width: 100%;" id="sub_category_name">
                             <option value="en"
                             @if ($tag->language=="en")
                                 selected
-                            @endif>en</option>
+                            @endif>English</option>
                             <option value="hi"
                             @if ($tag->language=="hi")
                                 selected
-                            @endif>hi</option>
+                            @endif>Hindi</option>
                           </select>
                         </div>
                     </div>
-                    
               </div>
                 </div>
                   <!-- /.card-body -->
-  
                   <div class="card-footer">
                     <div class="float-right">
                     <a class="btn btn-secondary" href="{{ route('tag.index')}}" role="button">Back</a>

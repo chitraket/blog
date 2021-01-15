@@ -50,6 +50,10 @@ class admin extends Authenticatable
     {
         return $this->hasMany('App\Model\user\comments');
     }
+    public function replys()
+    {
+        return $this->hasMany('App\Model\user\reply');
+    }
     public function favorite_post()
     {
         return $this->hasMany('App\Model\user\favorite_post');

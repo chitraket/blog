@@ -40,7 +40,7 @@ class CategoryPolicy
     public function create(admin $user)
     {
         //
-        return $this->getPermission($user,10);
+        return $this->getPermission($user,8);
     }
 
     /**
@@ -53,7 +53,7 @@ class CategoryPolicy
     public function update(admin $user)
     {
         //
-        return $this->getPermission($user,11);
+        return $this->getPermission($user,9);
     }
 
     /**
@@ -66,7 +66,7 @@ class CategoryPolicy
     public function delete(admin $user)
     {
         //
-        return $this->getPermission($user,12);
+        return $this->getPermission($user,10);
     }
 
     /**

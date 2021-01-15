@@ -12,6 +12,7 @@ return[
     'enteryourreply' => 'Enter your reply',
     'submit' => 'Submit',
     'reply' => 'Reply',
-    'like' => 'Likes'
+    'like' => 'Likes',
+    'date'=>'Date'
 ]
 ?>

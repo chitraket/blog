@@ -4,11 +4,13 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Model\user\favorite_post;
 use Brian2694\Toastr\Facades\Toastr;
+use App\Model\admin\role;
+use App\Model\user\post;
 use Illuminate\Support\Facades\Auth;
-use App\Model\user\tag;
 
-class TagController extends Controller
+class FavoriteController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -18,12 +20,21 @@ class TagController extends Controller
     public function index()
     {
         //
-        if (Auth::user()->can('tags.create', 'tags.update', 'tags.delete')) {
-            $tags=tag::all();
-            return view('admin.tag.show', compact('tags'));
+        if (Auth::user()->can('favorite.delete')) {
+            foreach (Auth::user()->roles as $role) {
+                if ($role->id == 4) {
+                    $favorite_post=favorite_post::all();
+                }
+                else
+                {
+                    $user_id=Auth::user()->id;
+                    $favorite_post=favorite_post::where('admin_id', $user_id)->get();
+            }
+            return view('admin.favorite.show', compact('favorite_post'));
         }
         return redirect(route('admin.home'));
     }
+}
 
     /**
      * Show the form for creating a new resource.
@@ -33,10 +44,6 @@ class TagController extends Controller
     public function create()
     {
         //
-        if (Auth::user()->can('tags.create')) {
-        return view('admin.tag.tag');
-        }
-        return redirect(route('admin.home'));
     }
 
     /**
@@ -48,19 +55,6 @@ class TagController extends Controller
     public function store(Request $request)
     {
         //
-        $this->validate($request,[
-            'title'=>'required',
-            'language'=>'required'
-        ]);
-        $tag = new tag;
-        $tag->name=$request->title;
-        $tag->slug=str_slug($request->title);
-        $tag->language=$request->language;
-        if($tag->save())
-        {
-            Toastr::success('Tag Successfully Inserted', 'Success');
-        }
-        return redirect(route('tag.index'));
     }
 
     /**
@@ -83,11 +77,6 @@ class TagController extends Controller
     public function edit($id)
     {
         //
-        if (Auth::user()->can('tags.update')) {
-            $tag=tag::where('id', $id)->first();
-            return view('admin.tag.edit', compact('tag'));
-        }
-        return redirect(route('admin.home'));
     }
 
     /**
@@ -100,19 +89,6 @@ class TagController extends Controller
     public function update(Request $request, $id)
     {
         //
-        $this->validate($request,[
-            'title'=>'required',
-            'language'=>'required',
-        ]);
-        $tag = tag::find($id);
-        $tag->name=$request->title;
-        $tag->slug=str_slug($request->title);
-        $tag->language=$request->language;
-        if($tag->save())
-        {
-            Toastr::success('Tag Successfully Updated', 'Success');
-        }
-        return redirect(route('tag.index'));
     }
 
     /**
@@ -124,9 +100,9 @@ class TagController extends Controller
     public function destroy($id)
     {
         //
-        if (Auth::user()->can('tags.delete')) {
-            tag::find($id)->delete();
-            Toastr::success('Tag Successfully Deleted', 'Success');
+        if (Auth::user()->can('favorite.delete')) {
+            favorite_post::find($id)->delete();
+            Toastr::success('Favorite Post Successfully Deleted', 'Success');
             return redirect()->back();
         }
         return redirect(route('admin.home'));

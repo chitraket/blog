@@ -19,4 +19,8 @@ class reply extends Model
     {
         return $this->belongsTo('App\Model\user\comments');
     }
+    public function admin()
+    {
+        return $this->belongsTo('App\Model\admin\admin');
+    }
 }

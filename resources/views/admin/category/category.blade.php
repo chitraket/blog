@@ -49,15 +49,11 @@
                             <input type="text" class="form-control" id="exampleInputcategorytitle1" name="title" placeholder="Category Title">
                         </div>
                         <div class="form-group">
-                            <label for="exampleInputcategoryslug1">Category Slug</label>
-                            <input type="text" class="form-control" id="exampleInputcategoryslug1" name="slug" placeholder="Category Slug">
-                        </div>
-                        <div class="form-group">
                           <label>Category Language</label>
                           <select class="form-control" name="language" style="width: 100%;" id="sub_category_name">
                             <option selected="selected">Select Language</option>
-                            <option value="en">en</option>
-                            <option value="hi">hi</option>
+                            <option value="en">English</option>
+                            <option value="hi">Hindi</option>
                           </select>
                         </div>
                     </div>

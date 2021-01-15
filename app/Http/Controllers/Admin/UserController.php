@@ -116,7 +116,7 @@ class UserController extends Controller
     {
         //
         $this->validate($request,[
-            'name' => ['required', 'string', 'max:255'],
+            'name' => ['required','string','max:255'],
             'email' => 'required|string|email|max:255|unique:users,email,'.$id,
             'password' => ['required', 'string', 'min:8'],
             'image' => 'image|mimes:jpeg,png,jpg'
@@ -161,18 +161,18 @@ class UserController extends Controller
     public function destroy($id)
     {
         //
-        $user=user::where('id',$id)->first();
-        if($user->image != "default.png")
-        {
-            $filenames[] = public_path().'/images/user_62X62/'.$user->image;
-            File::delete($filename);
-            $user->delete();
+        if (Auth::user()->can('users.delete')) {
+            $user=user::find($id);
+            if ($user->image != "default.png") {
+                $filenames[] = public_path().'/images/user_62X62/'.$user->image;
+                File::delete($filename);
+                $user->delete();
+            } else {
+                $user->delete();
+            }
+            Toastr::success('User Successfully Deleted', 'Success');
+            return redirect()->back();
         }
-        else
-        {
-            $user->delete();
-        }
-        Toastr::success('User Successfully Deleted', 'Success');
-        return redirect()->back();
+        return redirect(route('admin.home'));
     }
 }

@@ -48,10 +48,6 @@
                       <label for="exampleInputtagtitel1">Name</label>
                   <input type="text" class="form-control" id="exampleInputtagtitle1" name="name" placeholder="Name" value="{{ $user->name }}" required>
                   </div>
-                  <div class="form-group">
-                    <label for="exampleInputtagtitel1">Username</label>
-                  <input type="text" class="form-control" id="exampleInputtagtitle1" name="username" placeholder="User Name"value="{{ $user->username }}" required>
-                </div>
                 <div class="form-group">
                   <label for="exampleInputtagslug1">Phone</label>
                 <input type="number" class="form-control" id="exampleInputtagslug1" name="phone" placeholder="Phone" value="{{ $user->phone }}" required>
@@ -84,7 +80,7 @@
                     @if (old('status')==1 || $user->status == 1)
                         checked
                     @endif>
-                    <label for="customCheckbox100" class="custom-control-label pl-4">status</label>
+                    <label for="customCheckbox100" class="custom-control-label pl-4">Status</label>
                     </div> 
                   </div>
                   </div>
@@ -103,7 +99,7 @@
                   </div>
               </div>
         </div>
-          </div>
+          
             <!-- /.card-body -->
             <div class="card-footer">
               <div class="float-right">

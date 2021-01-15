@@ -8,6 +8,7 @@ use App\Model\admin\role;
 use Brian2694\Toastr\Facades\Toastr;
 use Illuminate\Support\Facades\Auth;
 use App\Model\user\comments;
+use App\Model\user\reply;
 class CommentController extends Controller
 {
     /**
@@ -20,8 +21,9 @@ class CommentController extends Controller
         //
         if (Auth::user()->can('comment.delete')) {
             foreach (Auth::user()->roles as $role) {
-                if ($role->id == 5) {
+                if ($role->id == 4) {
                     $comment=comments::all();
+                    
                 }
                 else
                 {
@@ -39,9 +41,10 @@ class CommentController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create(Request $request)
     {
         //
+        
     }
 
     /**
@@ -53,6 +56,21 @@ class CommentController extends Controller
     public function store(Request $request)
     {
         //
+        $this->validate($request,[
+            'reply'=>'required'
+        ]);
+        $comment = new reply();
+        $comment->post_id = $request->post_id;
+        $comment->user_id = $request->user_id;
+        $comment->comment_id =$request->comment_id;
+        $comment->admin_id=Auth::user()->id;
+        $comment->reply = $request->reply;
+        $comment->reply_status= 1;
+        if($comment->save())
+        {
+            Toastr::success('Comment Successfully', 'Success');
+        }
+        return redirect(route('comment.index'));
     }
 
     /**
@@ -64,6 +82,7 @@ class CommentController extends Controller
     public function show($id)
     {
         //
+
     }
 
     /**
@@ -75,6 +94,17 @@ class CommentController extends Controller
     public function edit($id)
     {
         //
+        if (Auth::user()->can('comment.delete')) {
+        $reply=comments::where('id',$id)->get();
+            foreach($reply as $replys)
+            {
+                $post_id=$replys->post_id;
+                $user_id=$replys->user_id;
+                $comment_id=$replys->id;
+            }
+        return view('admin.comment.add', compact('post_id','user_id','comment_id'));
+        }
+        return redirect(route('admin.home'));
     }
 
     /**
@@ -87,6 +117,7 @@ class CommentController extends Controller
     public function update(Request $request, $id)
     {
         //
+
     }
 
     /**

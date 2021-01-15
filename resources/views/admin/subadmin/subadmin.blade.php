@@ -50,10 +50,6 @@
                             <label for="exampleInputtagtitel1">Name</label>
                             <input type="text" class="form-control" id="exampleInputtagtitle1" name="name" placeholder="Name" required>
                         </div>
-                        <div class="form-group">
-                          <label for="exampleInputtagtitel1">Username</label>
-                          <input type="text" class="form-control" id="exampleInputtagtitle1" name="username" placeholder="User Name" required>
-                      </div>
                       <div class="form-group">
                         <label for="exampleInputtagslug1">Phone</label>
                         <input type="number" class="form-control" id="exampleInputtagslug1" name="phone" placeholder="Phone" required>
@@ -91,7 +87,7 @@
                     
                           <div class="custom-control custom-checkbox">
                           <input class="custom-control-input" type="checkbox" name="status"  id="customCheckbox100" value="1" >
-                          <label for="customCheckbox100" class="custom-control-label">status</label>
+                          <label for="customCheckbox100" class="custom-control-label pl-4">Status</label>
                           </div> 
                         </div>
                         </div>
@@ -99,7 +95,7 @@
                           @foreach ($roles as $role)
                           <div class="custom-control custom-checkbox">
                           <input class="custom-control-input" type="checkbox" name="role[]" value="{{ $role->id }}" id="customCheckbox{{$role->id}}">
-                          <label for="customCheckbox{{$role->id}}" class="custom-control-label">{{ $role->name }}</label>
+                          <label for="customCheckbox{{$role->id}}" class="custom-control-label pl-4">{{ $role->name }}</label>
                           </div> 
                           @endforeach
                         </div>

@@ -3,6 +3,7 @@
 return[
     'logo'=>'Blogger Loop',
     'home'=>'Home',
+    'post'=>'Post',
     'allpost'=>'All Post',
     'login'=>'Login',
     'register'=>'Register',

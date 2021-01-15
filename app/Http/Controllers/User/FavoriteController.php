@@ -16,7 +16,7 @@ class FavoriteController extends Controller
         App::setLocale($request->locale);
         session()->put('locale', $request->locale);
         $user = Auth::user();
-        $isFavorite = $user->favorite_post()->where('post_id',$request->post)->count();
+        $isFavorite = $user->favorite_post()->where(['post_id'=>$request->post])->count();
 
          if ($isFavorite == 0)
          {
@@ -25,12 +25,12 @@ class FavoriteController extends Controller
             $reply->user_id = Auth::id();
             $reply->admin_id=$request->admin_id;
             $reply->save();
-            Toastr::success('Post successfully added to your favorite list :)','Success');
-            return redirect()->back();
+            $favorite = $user->favorite_post()->where('post_id',$request->post)->count();
+            return response()->json(['success'=>'1','count'=>$favorite,'post'=>$request->post]);
          } else {
-             $chit=favorite_post::where(['post_id'=>$request->post,'user_id'=>Auth::id()])->delete();
-             Toastr::success('Post successfully removed form your favorite list :)', 'Success');
-             return redirect()->back();
+             $chit=favorite_post::where(['post_id'=>$request->post,'user_id'=>Auth::id(),'admin_id'=>$request->admin_id])->delete();
+             $favorite = $user->favorite_post()->where('post_id',$request->post)->count();
+             return response()->json(['success'=>'2','count'=>$favorite,'post'=>$request->post]);
          }
 
     }

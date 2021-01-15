@@ -108,7 +108,7 @@ class RoleController extends Controller
         $role->permissions()->sync($request->permission);
         if($role->save())
         {
-            Toastr::success('Tag Successfully Updated', 'Success');
+            Toastr::success('Role Successfully Updated', 'Success');
         }
         return redirect(route('role.index'));
 
@@ -123,8 +123,11 @@ class RoleController extends Controller
     public function destroy($id)
     {
         //
+        if (Auth::user()->can('roles.delete')) {
         role::find($id)->delete();
         Toastr::success('Role Successfully Deleted', 'Success');
         return redirect()->back();
+    }
+        return redirect(route('admin.home'));
     }
 }

@@ -64,7 +64,7 @@
           <div class="clearfix hidden-md-up"></div>
           <div class="col-12 col-sm-6 col-md-3">
             <div class="info-box mb-3">
-              <span class="info-box-icon bg-success elevation-1"><i class="fas fa-shopping-cart"></i></span>
+              <span class="info-box-icon bg-success elevation-1"><i class="nav-icon fas fa-th"></i></span>
               <div class="info-box-content">
                 <span class="info-box-text">Category</span>
               <span class="info-box-number">{{ $category->count() }}</span>
@@ -124,7 +124,11 @@
                     <tr>
                       <th>Rank</th>
                       <th>Title</th>
-                      <th>Author</th>
+                      @foreach (Auth::user()->roles as $role)
+                        @if ($role->id == 4)
+                        <th>Author</th>
+                        @endif
+                      @endforeach
                       <th>Views</th>
                       <th>Favorite</th>
                       <th>Comments</th>
@@ -137,7 +141,19 @@
                       <tr>
                           <td>{{ $key + 1 }}</td>
                           <td>{{ $post->title }}</td>
-                          <td>{{ $post->admin->name }}</td>
+                          <td>
+                          @foreach (Auth::user()->roles as $roles)
+                          @if ($roles->id == 4)
+                          @foreach ($post->admin->roles as $role)
+                            @if ($role->id == 4)
+                            <i class="nav-icon fas fa-user-shield mr-2"></i>  
+                            @else
+                            <i class="nav-icon fas fa-user mr-2"></i> 
+                            @endif
+                          @endforeach
+                          @endif
+                          @endforeach
+                          {{ $post->admin->name }}</td>
                           <td>{{ $post->view_count }}</td>
                           <td>{{ $post->favorite_post_count }}</td>
                           <td>{{ $post->comments_count }}</td>
@@ -158,10 +174,10 @@
               <!-- /.card-body -->
               <div class="card-footer clearfix">
                 @can('posts.create', Auth::user())
-                <a href="{{ route('post.create')}}" class="btn btn-sm btn-success float-left">Place New Order</a>
+                <a href="{{ route('post.create')}}" class="btn btn-sm btn-success float-left">New Post</a>
                 @endcan
                 @can('posts.create','posts.update','posts.delete',Auth::user())
-                <a href="{{ route('post.index') }}" class="btn btn-sm btn-secondary float-right">View All Orders</a>
+                <a href="{{ route('post.index') }}" class="btn btn-sm btn-secondary float-right">View Post</a>
                 @endcan
               </div>
               <!-- /.card-footer -->
@@ -169,8 +185,7 @@
             @if (isset($admin))
             <div class="card">
               <div class="card-header border-transparent">
-                <h3 class="card-title">Best Admin</h3>
-
+                <h3 class="card-title">Best Author</h3>
                 <div class="card-tools">
                   <button type="button" class="btn btn-tool" data-card-widget="collapse">
                     <i class="fas fa-minus"></i>
@@ -187,7 +202,7 @@
                     <thead>
                     <tr>
                       <th>Rank</th>
-                      <th>Name</th>
+                      <th>Author</th>
                       <th>Post</th>
                       <th>Favorite</th>
                       <th>Comment</th>
@@ -198,7 +213,15 @@
                       @foreach($admin as $key=>$admins)
                       <tr>
                           <td>{{ $key + 1 }}</td>
-                          <td>{{ $admins->name }}</td>
+                          <td>
+                          @foreach ($admins->roles as $role)
+                            @if ($role->id == 4)
+                            <i class="nav-icon fas fa-user-shield mr-2"></i>  
+                            @else
+                            <i class="nav-icon fas fa-user mr-2"></i> 
+                            @endif
+                          @endforeach
+                          {{ $admins->name }}</td>
                           <td>{{ $admins->posts_count }}</td>
                           <td>{{ $admins->favorite_post_count }}</td>
                           <td>{{ $admins->comments_count }}</td> 
@@ -247,7 +270,7 @@
             <!-- /.info-box -->
             @if (isset($new_authors_today))
             <div class="info-box mb-3 bg-danger">
-              <span class="info-box-icon"><i class="fas fa-user-clock"></i></span>
+              <span class="info-box-icon"><i class="fas fa-user-plus"></i></span>
 
               <div class="info-box-content">
                 <span class="info-box-text">New admin</span>
@@ -257,6 +280,7 @@
             </div>
             @endif
             <!-- /.info-box -->
+            @if (isset($comments))
             <div class="info-box mb-3 bg-info">
               <span class="info-box-icon"><i class="far fa-comment"></i></span>
 
@@ -266,8 +290,11 @@
               </div>
               <!-- /.info-box-content -->
             </div>
+            @endif
+            
             <!-- /.info-box -->
             <!-- /.info-box -->
+            @if (isset($favorite_post))
             <div class="info-box mb-3 bg-info">
               <span class="info-box-icon"><i class="far fa-heart"></i></span>
 
@@ -277,6 +304,9 @@
               </div>
               <!-- /.info-box-content -->
             </div>
+                
+            @endif
+           
             <!-- /.info-box -->
           </div>
           <!-- /.col -->

@@ -52,6 +52,8 @@ Route::group(['namespace'=> 'Admin','middleware'=>'auth:admin'],function(){
     Route::get('changeStatuss','AuthorController@changeStatus');
     //Roles Routes
     Route::resource('admin/role', 'RoleController');
+    //Favorite Routes
+    Route::resource('admin/favorite','FavoriteController');
     //Permission Routes
     Route::resource('admin/permission', 'PermissionController');
     //Profile Rotes
@@ -67,8 +69,8 @@ Route::group(['prefix'=>'{locale}','where'=>['locale'=>'[a-zA-Z]{2}','middleware
 });
 
 Route::group(['middleware'=>['auth'],'prefix'=>'{locale}','where'=>['locale'=>'[a-zA-Z]{2}','middleware'=>'setlocale']], function (){
-    Route::post('favorite/{post}/add','User\FavoriteController@add')->name('post.favorite');
-    Route::post('comment/{post}','User\CommentController@store')->name('comment.store');
+    Route::post('favorite','User\FavoriteController@add')->name('post.favorite');
+    Route::post('comment/{post}','User\CommentController@store')->name('comment.stores');
     Route::post('reply/{post}','User\ReplyController@store')->name('reply.store');
     Route::post('/logout','Auth\LoginController@logout')->name('logout');
     Route::put('profile-update','Auth\SettingController@updateProfile')->name('user.profile.update');
@@ -87,4 +89,22 @@ Route::group(['middleware'=>['auth'],'prefix'=>'{locale}','where'=>['locale'=>'[
     ->orderBy('created_at', 'desc')
     ->take(5)->get();
     $view->with(['categories'=>$categories,'popular_posts'=>$popular_posts]);
+});
+View::composer('user.layouts.header',function ($view) {
+    //$categories = App\Model\user\category::where('language',session('locale'))->get();
+    $popular_posts = App\Model\user\post::where(['status'=>1,'language'=>session('locale')])
+    ->withCount('comments')
+    ->withCount('favorite_post')
+    ->orderBy('view_count', 'desc')
+    ->orderBy('comments_count', 'desc')
+    ->orderBy('favorite_post_count', 'desc')
+    ->orderBy('created_at', 'desc')
+    ->get();
+    foreach($popular_posts as $post){
+        $categories=$post->categories->take(4);   
+    }
+    if(isset($categories))
+    {
+        $view->with(['categories'=>$categories]);
+    }
 });

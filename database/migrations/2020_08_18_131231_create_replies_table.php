@@ -20,6 +20,7 @@ class CreateRepliesTable extends Migration
             $table->integer('comment_id')->unsigned();
             $table->integer('admin_id')->unsigned();
             $table->text('reply');
+            $table->boolean('reply_status')->default(0);
             $table->foreign('post_id')
                 ->references('id')->on('posts')
                 ->onDelete('cascade');

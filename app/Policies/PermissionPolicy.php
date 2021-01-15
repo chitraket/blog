@@ -41,7 +41,7 @@ class PermissionPolicy
     public function create(admin $user)
     {
         //
-        return $this->getPermission($user,19);
+        return $this->getPermission($user,17);
     }
 
     /**
@@ -54,7 +54,7 @@ class PermissionPolicy
     public function update(admin $user)
     {
         //
-        return $this->getPermission($user,20);
+        return $this->getPermission($user,18);
     }
 
     /**
@@ -67,7 +67,7 @@ class PermissionPolicy
     public function delete(admin $user)
     {
         //
-        return $this->getPermission($user,21);
+        return $this->getPermission($user,19);
     }
 
     /**

@@ -21,7 +21,7 @@ class PostController extends Controller
         App::setLocale($request->locale);
         session()->put('locale', $request->locale);
         $posts=post::where(['status'=>1,'language'=>$request->locale])->paginate(6);
-        
+        $user=Auth::user();
         if (count($posts) !=0 ) {
             $tagpost=tag::where('language',$request->locale)->get();
             $categorypost=category::where('language',$request->locale)->get();
@@ -53,7 +53,7 @@ class PostController extends Controller
                             $s="";
                         }
                     }
-            return view('user.allpost', compact('posts','tagpost','categorypost','categorys','k','post_top','s'));
+            return view('user.allpost', compact('posts','tagpost','categorypost','categorys','k','post_top','s','user'));
         }
         else{
             return view('user.error');   
@@ -94,7 +94,7 @@ class PostController extends Controller
            $random = post::inRandomOrder()->where(['status'=>1,'language'=>$request->locale])->take(4)->get();
            $previous=$category->where('id', '<', $post->id)->first();
            $next=$category->where('id', '>', $post->id)->first();
-          $dates=post::where(['status'=>1,'language'=>$request->locale])->select(DB::raw('count(id) as `data`'),DB::raw('YEAR(created_at) year, MONTHNAME(created_at) month_name , MONTH(created_at) AS month'))
+           $dates=post::where(['status'=>1,'language'=>$request->locale])->select(DB::raw('count(id) as `data`'),DB::raw('YEAR(created_at) year, MONTHNAME(created_at) month_name , MONTH(created_at) AS month'))
                ->groupby('year','month','month_name')
                ->orderBy('year', 'desc')
                ->orderBy('month', 'desc')
@@ -139,19 +139,8 @@ class PostController extends Controller
                 {
                     $r="";
                 }
-            }
-            if (Auth::guest()) {
-                 $c="";
-            }
-            else
-            {
-                if ($user->favorite_post()->where('post_id', $post->id)->count() == 0) {
-                    $c="-o";
-                } else {
-                    $c="";
-                }
-            }   
-        return view('user.post', compact('post', 'previous', 'next', 'posts','k','categorypost','tagpost','c','user','post_top','s','random','r','dates'));  
+            } 
+        return view('user.post', compact('post', 'previous', 'next', 'posts','k','categorypost','tagpost','user','post_top','s','random','r','dates'));  
     }
     
         else
@@ -259,6 +248,7 @@ class PostController extends Controller
         ->whereYear('created_at', '=',$request->year )
         ->whereMonth('created_at', '=', $request->month)
         ->paginate(6);
+        $user=Auth::user();
         if(count($posts) !=0)
         {
             foreach ($posts as $postss) {
@@ -309,7 +299,7 @@ class PostController extends Controller
                     $s="";
                 }
             }
-            return view('user.date',compact('posts','month','year','monthName','tagpost','categorypost','categorys','k','post_top','s'));
+            return view('user.date',compact('posts','month','year','monthName','tagpost','categorypost','categorys','k','post_top','s','user'));
         }
         else
         {

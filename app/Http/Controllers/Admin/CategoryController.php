@@ -49,12 +49,11 @@ class CategoryController extends Controller
         //
         $this->validate($request,[
             'title'=>'required',
-            'slug'=>'required',
             'language'=>'required'
         ]);
         $category = new category;
         $category->name=$request->title;
-        $category->slug=$request->slug;
+        $category->slug=str_slug($request->title);
         $category->language=$request->language;
         if($category->save())
         {
@@ -102,12 +101,11 @@ class CategoryController extends Controller
         //
         $this->validate($request,[
             'title'=>'required',
-            'slug'=>'required',
             'language'=>'required'
         ]);
         $category = category::find($id);
         $category->name=$request->title;
-        $category->slug=$request->slug;
+        $category->slug=str_slug($request->title);
         $category->language=$request->language;
         if($category->save())
         {
@@ -125,8 +123,11 @@ class CategoryController extends Controller
     public function destroy($id)
     {
         //
+        if (Auth::user()->can('categorys.delete')) {
         category::find($id)->delete();
         Toastr::success('Category Successfully Deleted', 'Success');
         return redirect()->back();
+        }
+        return redirect(route('admin.home'));
     }
 }

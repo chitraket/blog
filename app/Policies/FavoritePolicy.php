@@ -1,10 +1,11 @@
 <?php
 
 namespace App\Policies;
-use App\Model\admin\admin;
-use Illuminate\Auth\Access\HandlesAuthorization;
 
-class TagPolicy
+use Illuminate\Auth\Access\HandlesAuthorization;
+use App\Model\admin\admin;
+
+class FavoritePolicy
 {
     use HandlesAuthorization;
 
@@ -23,7 +24,7 @@ class TagPolicy
      * Determine whether the user can view the model.
      *
      * @param  \App\Model\user\User  $user
-     * @param  \App\tag  $tag
+     * @param  \App\favorite  $favorite
      * @return mixed
      */
     public function view(admin $user)
@@ -40,40 +41,38 @@ class TagPolicy
     public function create(admin $user)
     {
         //
-        return $this->getPermission($user,5);
     }
 
     /**
      * Determine whether the user can update the model.
      *
      * @param  \App\Model\user\User  $user
-     * @param  \App\tag  $tag
+     * @param  \App\favorite  $favorite
      * @return mixed
      */
     public function update(admin $user)
     {
         //
-        return $this->getPermission($user,6);
     }
 
     /**
      * Determine whether the user can delete the model.
      *
      * @param  \App\Model\user\User  $user
-     * @param  \App\tag  $tag
+     * @param  \App\favorite  $favorite
      * @return mixed
      */
     public function delete(admin $user)
     {
         //
-        return $this->getPermission($user,7);
+        return $this->getPermission($user,24);
     }
 
     /**
      * Determine whether the user can restore the model.
      *
      * @param  \App\Model\user\User  $user
-     * @param  \App\tag  $tag
+     * @param  \App\favorite  $favorite
      * @return mixed
      */
     public function restore(admin $user)
@@ -85,7 +84,7 @@ class TagPolicy
      * Determine whether the user can permanently delete the model.
      *
      * @param  \App\Model\user\User  $user
-     * @param  \App\tag  $tag
+     * @param  \App\favorite  $favorite
      * @return mixed
      */
     public function forceDelete(admin $user)

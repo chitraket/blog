@@ -15,7 +15,7 @@
                         <div id="imaginary_container"> 
                             <form method="GET" action="{{ route('search',app()->getLocale()) }}">
                             <div class="input-group stylish-input-group">
-                            <input type="text" class="form-control" value="{{ isset($query) ? $query : '' }}" name="query"  placeholder="{{ $query }}" onfocus="this.placeholder = ''" onblur="this.placeholder = '{{__('header.search')}} '" required="">
+                            <input type="text" class="form-control" value="{{ isset($query) ? $query : '' }}" name="search"  placeholder="{{ $query }}" onfocus="this.placeholder = ''" onblur="this.placeholder = '{{__('header.search')}} '" required="">
                                 <span class="input-group-addon">
                                     <button type="submit">
                                         <span class="lnr lnr-magnifier"></span>
@@ -50,25 +50,20 @@
                                   </h4></a><p>{{ $post->subtitle }}</p>
                                     <p>{{Str::limit($post->meta_description, $limit =100, $end = '...')}}</p>
                                         <p class="footer">
-                                            <i class="fa fa-comment-o" aria-hidden="true"></i> {{ $post->comments->count() }} {{__('search.comment')}}
                                             @if (Auth::guest())
-                                   <a href="javascript:void(0);" onclick="toastr.info('To add favorite list. You need to login first.','Info',{
-                                       closeButton: true,
-                                       progressBar: true,
-                                   })" class="text-dark pl-4"><i class="fa fa-heart-o" aria-hidden="true"></i> {{ $post->favorite_post->count() }} Likes</a>
+                                   
+                    <a href="javascript:void(0);"  onclick="toastr.info('To add favorite list. You need to login first.','Info',{
+                        closeButton: true,
+                        progressBar: true,
+                    })" class="text-dark pl-1"><i class="fa fa-heart-o " aria-hidden="true"></i>  {{ $post->favorite_post->count() }} {{__('search.like')}}</a>
                                    @else
-                                   <a href="javascript:void(0);" onclick="document.getElementById('favorite-form-{{ $post->id }}').submit();" class="text-dark pl-4">
-                                       @if ($user->favorite_post()->where('post_id', $post->id)->count() == 0)
-                                       <i class="fa fa-heart-o"></i>
-                                       @else
-                                       <i class="fa fa-heart"></i> 
-                                       @endif
-                                   {{ $post->favorite_post->count() }}{{__('search.like')}}</a> 
-                                    <form id="favorite-form-{{ $post->id }}" method="POST" action="{{ route('post.favorite',$post->id) }}" style="display: none;">
-                                        @csrf
-                                        <input type="hidden" name="admin_id" id="admin_id" value="{{ $post->admin->id }}">
-                                    </form>
+                                    <a href="javascript:void(0);" id="addfavourites{{$post->id}}" onClick="addToFavourites({{$post->id}}, {{ $post->admin->id }}).submit();" name="addToFavourites" class="text-dark pl-1">
+                                        <i id="heart{{$post->id}}" class="{{ $user->favorite_post()->where('post_id', $post->id)->count() == 0 ? 'fa fa-heart-o' : 'fa fa-heart'  }} "></i>
+                                        <span id="price{{$post->id}}">{{ $post->favorite_post->count() }}</span> {{__('search.like')}}</a>
                                    @endif
+                                   <span class="pull-right">
+                                    <i class="fa fa-comment-o" aria-hidden="true"></i> {{ $post->comments->count() }} {{__('search.comment')}}
+                                    </span>  
                                         </p>
                                     </div>
                                 </div>
@@ -119,22 +114,14 @@
                                     <span> 
                                     <i class="fa fa-comment-o" aria-hidden="true"></i> {{ $item->comments->count() }}
                                     @if (Auth::guest())
-                                    <a href="javascript:void(0);" onclick="toastr.info('To add favorite list. You need to login first.','Info',{
+                                    <a href="javascript:void(0);"  onclick="toastr.info('To add favorite list. You need to login first.','Info',{
                                         closeButton: true,
                                         progressBar: true,
-                                    })" class="text-dark "><i class="fa fa-heart-o" aria-hidden="true"></i> {{ $item->favorite_post->count() }}</a>
+                                    })" class="text-dark"><i class="fa fa-heart-o " aria-hidden="true"></i>  {{ $item->favorite_post->count() }}</a>
                                     @else
-                                    <a href="javascript:void(0);" onclick="document.getElementById('favorite-form-{{ $item->id }}').submit();" class="text-dark ">
-                                   @if ($user->favorite_post()->where('post_id', $item->id)->count() == 0)
-                                   <i class="fa fa-heart-o"></i>
-                                   @else
-                                   <i class="fa fa-heart"></i> 
-                                   @endif
-                                   {{ $item->favorite_post->count() }}</a>
-                                    <form id="favorite-form-{{ $item->id }}" method="POST" action="{{ route('post.favorite',$item->id) }}" style="display: none;">
-                                        @csrf
-                                        <input type="hidden" name="admin_id" id="admin_id" value="{{ $item->admin->id }}">
-                                    </form> 
+                                    <a href="javascript:void(0);" id="addfavourites{{$item->id}}" onClick="addToFavourites({{$item->id}}, {{ $item->admin->id }}).submit();" name="addToFavourites" class="text-dark">
+                                    <i id="heart{{$item->id}}" class="{{ $user->favorite_post()->where('post_id', $item->id)->count() == 0 ? 'fa fa-heart-o' : 'fa fa-heart'  }} "></i>
+                                    <span id="price{{$item->id}}" class="pl-1"> {{ $item->favorite_post->count() }}</a>    
                                     @endif 
                                 </span></p>    
                             </div>  
@@ -147,9 +134,11 @@
                         <h4 class="text-uppercase pb-20">{{__('search.tag')}}</h4>
                         <ul>
                             @foreach ($tagpost as $tagposts)
+                            @if (!$tagposts->posts()->count()==0)
                             <li>
                             <a href="{{ route('tag',['locale'=>app()->getLocale(),'tag'=>$tagposts->slug]) }}">{{ $tagposts->name }}</a>
                             </li>
+                            @endif
                             @endforeach  
                         </ul>
                     </div>
@@ -166,21 +155,14 @@
                                      <span>
                                         <i class="fa fa-comment-o" aria-hidden="true"></i> {{ $item->comments->count() }}
                                         @if (Auth::guest())
-                                        <a href="javascript:void(0);" onclick="toastr.info('To add favorite list. You need to login first.','Info',{
+                                        <a href="javascript:void(0);"  onclick="toastr.info('To add favorite list. You need to login first.','Info',{
                                             closeButton: true,
                                             progressBar: true,
-                                        })" class="text-dark "><i class="fa fa-heart-o" aria-hidden="true"></i> {{ $item->favorite_post->count() }}</a>
+                                        })" class="text-dark"><i class="fa fa-heart-o " aria-hidden="true"></i>  {{ $item->favorite_post->count() }}</a>
                                         @else
-                                        <a href="javascript:void(0);" onclick="document.getElementById('favorite-form-{{ $item->id }}').submit();" class="text-dark ">
-                                       @if ($user->favorite_post()->where('post_id', $item->id)->count() == 0)
-                                       <i class="fa fa-heart-o"></i> {{ $item->favorite_post->count() }}</a>
-                                       @else
-                                       <i class="fa fa-heart"></i> {{ $item->favorite_post->count() }}</a> 
-                                       @endif
-                                        <form id="favorite-form-{{ $item->id }}" method="POST" action="{{ route('post.favorite',['locale'=>app()->getLocale(),'post'=>$item->id]) }}" style="display: none;">
-                                            @csrf
-                                            <input type="hidden" name="admin_id" id="admin_id" value="{{ $item->admin->id }}">
-                                        </form> 
+                                        <a href="javascript:void(0);" id="addfavourites{{$item->id}}" onClick="addToFavourites({{$item->id}}, {{ $item->admin->id }}).submit();" name="addToFavourites" class="text-dark">
+                                            <i id="heart{{$item->id}}" class="{{ $user->favorite_post()->where('post_id', $item->id)->count() == 0 ? 'fa fa-heart-o' : 'fa fa-heart'  }} "></i>
+                                            <span id="price{{$item->id}}" class="pl-1"> {{ $item->favorite_post->count() }}</a>    
                                         @endif 
                                      </span>
                             </p>  
@@ -205,5 +187,51 @@
 <script src="{{ asset('admin/plugins/toastr/toastr.js.map') }}"></script>
 <script src="{{ asset('admin/plugins/toastr/toastr.min.js') }}"></script>
 {!! Toastr::message() !!}
-
+<script>
+    function addToFavourites(itemid, userid) {
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
+        var post = itemid;
+        var admin_id = userid;
+        $.ajax({
+            type: 'POST',
+            url: '{{ route("post.favorite",["locale"=>app()->getLocale()]) }}',
+            dataType: "json",
+            data: {
+                'post': post,
+                'admin_id': admin_id,
+            },
+            success: function (data) {
+                if(jQuery.isEmptyObject(data.success.attached)){
+                    if(data.success==1){
+                        $('span#price'+post).html( data.count );
+                        $('i#heart'+post).removeClass('fa fa-heart-o');
+                        $('i#heart'+post).addClass('fa fa-heart');
+                    toastr.success('Post successfully added to your favorite list :)','Success',{
+                        closeButton: true,
+                        progressBar: true,
+                    });
+                    }
+                    else{
+                        $('span#price'+post).html( data.count );
+                        $('i#heart'+post).addClass('fa fa-heart-o');
+                        toastr.success('Post successfully removed form your favorite list :)', 'Success',{
+                        closeButton: true,
+                        progressBar: true,
+                    });
+                    }
+                }
+                else{
+                    
+                }
+            },
+            error: function (XMLHttpRequest) {
+                // handle error
+            }
+        });
+    }
+</script>
 @endsection

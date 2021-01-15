@@ -21,16 +21,17 @@ class SearchController extends Controller
             'search'=>'required',
         ]);
         $query = $request->input('search');
-       $posts=post::where(['status'=>1,'language'=>$locale])->where('title','like','%'.$query.'%')
+        $posts=post::where(['status'=>1,'language'=>$locale])->where('title','like','%'.$query.'%')
         ->orwhereHas('tags', function($tag) use ($query,$locale) {
-            $tag->where(['name'=>$query,'language'=>$locale]);
+            $tag->where(['name'=>$query,'language'=>$locale])->where(['status'=>1,'language'=>$locale]);
           })
         ->orwhereHas('categories', function($categories) use ($query,$locale) {
-            $categories->where(['name'=>$query,'language'=>$locale]);
+            $categories->where(['name'=>$query,'language'=>$locale])->where(['status'=>1,'language'=>$locale]);
           })
         ->orwhereHas('admin', function($admin) use ($query) {
             $admin->where(['name'=>$query]);
           })
+        ->where(['status'=>1,'language'=>$locale])
         ->orderBy('created_at', 'desc')
         ->paginate(6);
         $posts->appends($request->all());
@@ -69,12 +70,5 @@ class SearchController extends Controller
             return view('user.error');
         }
     }
-    public function autocomplete(Request $request)
-    {
-        $data = post::select("title as name","image as img","meta_description as desc")
-                    ->where("title","LIKE","%{$request->input('query')}%")
-                    ->get();
-
-        return response()->json($data);
-    }
+  
 }

@@ -41,7 +41,7 @@ class RolePolicy
     public function create(admin $user)
     {
         //
-        return $this->getPermission($user,13);
+        return $this->getPermission($user,11);
     }
 
     /**
@@ -54,7 +54,7 @@ class RolePolicy
     public function update(admin $user)
     {
         //
-        return $this->getPermission($user,14);
+        return $this->getPermission($user,12);
     }
 
     /**
@@ -67,7 +67,7 @@ class RolePolicy
     public function delete(admin $user)
     {
         //
-        return $this->getPermission($user,15);
+        return $this->getPermission($user,13);
     }
 
     /**

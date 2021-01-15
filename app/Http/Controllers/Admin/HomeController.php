@@ -61,9 +61,34 @@ class HomeController extends Controller
                      ->orderBy('favorite_post_count','desc')
                      ->take(5)->get();
             $posts=post::where('admin_id',$user_id);
-            $favorite_post=post::where('admin_id',$user_id)->withCount('favorite_post')->orderBy('favorite_post_count','desc')->count();
-            $comments=post::where('admin_id',$user_id)->withCount('comments')->orderBy('comments_count','desc')->count();
-             return view('admin.home',compact('popular_posts','posts','favorite_post','comments'));
+            $total_pending_posts = post::where(['status'=>0,'admin_id'=>$user_id])->count();
+            foreach(post::where(['admin_id'=>$user_id,'status'=>1])->withCount('favorite_post')->get() as $favorite)
+            {
+               $favorite_post=$favorite->favorite_post_count;
+            }
+            foreach (post::where(['admin_id'=>$user_id,'status'=>1])->withCount('comments')->get() as $comment) {
+                $comments=$comment->comments_count;
+            }
+            if(isset($favorite_post) && isset($comments) && isset($total_pending_posts))
+            {
+              return view('admin.home',compact('popular_posts','posts','favorite_post','comments','total_pending_posts'));
+            }
+            else if(isset($favorite_post))
+            {
+              return view('admin.home',compact('popular_posts','posts','favorite_post'));
+            }
+            else if(isset($comments))
+            {
+              return view('admin.home',compact('popular_posts','posts','comments'));
+            }
+            else if(isset($total_pending_posts))
+            {
+              return view('admin.home',compact('popular_posts','posts','total_pending_posts'));
+            }
+            else{
+              return view('admin.home',compact('popular_posts','posts'));
+            }
+             
           }
 
         }

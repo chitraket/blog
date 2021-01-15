@@ -42,14 +42,14 @@
                 <!-- /.card-header -->
                 <!-- form start -->
                 @include('includes.messages')
-              <form role="form" action="{{ route('post.store') }}" method="POST" enctype="multipart/form-data" >
+              <form role="form" action="{{ route('post.store') }}" method="POST" enctype="multipart/form-data" id="quickForm">
                 {{ csrf_field()}}
                   <div class="card-body">
                       <div class="form-row">
                         <div class="col-md-6">
                         <div class="form-group">
                             <label for="exampleInputtitel1">Post Title</label>
-                            <input type="text" class="form-control" id="exampleInputtitle1" name="title" placeholder="Title">
+                            <input type="text" class="form-control" id="exampleInputtitle1" name="title" placeholder="Title" >
                         </div>
                         <div class="form-group">
                             <label for="exampleInputsubtitel1">Post Sub Title</label>
@@ -80,20 +80,16 @@
                     
                     <div class="col-md-6">
                         <div class="form-group">
-                            <label for="exampleInputslug1">Post Slug</label>
-                            <input type="text" class="form-control" id="exampleInputslug1" name="slug" placeholder="Slug">
-                        </div>
-                        <div class="form-group">
                           <label>Post Language</label>
-                          <select class="form-control" name="language" style="width: 100%;" id="sub_category_name">
-                            <option selected="selected">Select Language</option>
+                          <select class="form-control" name="language" style="width: 100%;" id="sub_category_name" >
+                            <option selected="selected" disabled>Select Language</option>
                             <option value="en">English</option>
                             <option value="hi">Hindi</option>
                           </select>
                         </div>
                         <div class="form-group">
                           <label>Post Category</label>
-                          <select class="select2" multiple="multiple" id="sub_category" data-placeholder="Post Category" name="categories[]" style="width: 100%;">
+                          <select class="select2" multiple="multiple" id="sub_category" data-placeholder="Post Category" name="categories[]" style="width: 100%;" >
                             {{-- @foreach ($categories as $category)
                           <option value="{{$category->id}}">{{ $category->name}}</option>
                             @endforeach --}}
@@ -101,7 +97,7 @@
                         </div>
                         <div class="form-group">
                           <label>Post Tags</label>
-                          <select class="select2" multiple="multiple" id="sub_tag" data-placeholder="Post Tags" name="tags[]" style="width: 100%;">
+                          <select class="select2" multiple="multiple" id="sub_tag" data-placeholder="Post Tags" name="tags[]" style="width: 100%;" >
                             {{-- @foreach ($tags as $tag)
                           <option value="{{$tag->id}}">{{ $tag->name}}</option>
                             @endforeach --}}
@@ -140,6 +136,8 @@
 <!--Toastr-->
 <script src="{{ asset('admin/plugins/toastr/toastr.js.map') }}"></script>
 <script src="{{ asset('admin/plugins/toastr/toastr.min.js') }}"></script>
+<script src="{{ asset('admin/plugins/jquery-validation/jquery.validate.min.js') }}"></script>
+<script src="{{ asset('admin/plugins/jquery-validation/additional-methods.min.js') }}"></script>
 {!! Toastr::message() !!}
 <!-- Select2 -->
 <script src="{{ asset('admin/plugins/select2/js/select2.full.min.js') }}"></script>

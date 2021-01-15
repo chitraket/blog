@@ -1,5 +1,5 @@
 @extends('admin.layouts.app')
-@section('title')Admin @endsection
+@section('title')Favorite @endsection
 @section('head')
 <link rel="stylesheet" href="{{ asset('admin/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css') }}">
 <link rel="stylesheet" href="{{ asset('admin/plugins/datatables-responsive/css/responsive.bootstrap4.min.css') }}">
@@ -14,18 +14,13 @@
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1>Admin</h1>
+            <h1>Favorite</h1>
           </div>
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
             <li class="breadcrumb-item"><a href="{{ route('admin.home') }}">Home</a></li>
-            <li class="breadcrumb-item active">Admin</li>
+            <li class="breadcrumb-item active">Favorite</li>
             </ol>
-          </div>
-          <div class="col-sm-12">
-            @can('subadmin.create', Auth::user())
-          <a class="btn btn-success float-right" href="{{ route('subadmin.create')}}" role="button">Add New Admin</a>
-        @endcan  
         </div>
         </div>
         
@@ -38,7 +33,7 @@
       <!-- Default box -->
       <div class="card card-primary">
           <div class="card-header">
-            <h3 class="card-title">Admin</h3>
+            <h3 class="card-title">Favorite</h3>
         </div>
         <!-- /.card-header -->
         <div class="card-body">
@@ -46,49 +41,30 @@
             <thead>
             <tr>
               <th>No</th>
-              <th>Name</th>
-              <th>Email</th>
-              <th>Role</th>
-              <th>Status</th>
-              @can('subadmin.update', Auth::user())
-              <th>Edit</th>
-              @endcan
-              @can('subadmin.delete', Auth::user())
+              <th>post name</th>
+              <th>user name</th>
+              @can('favorite.delete', Auth::user())
               <th>Delete</th>
               @endcan
             </tr>
             </thead>
             <tbody>
             
-              @foreach ($users as $user)
+              @foreach ($favorite_post as $favorite)
               <tr>
             <td>{{ $loop->index + 1}}</td>
-              <td>{{ $user->name}}</td>
-              <td>{{ $user->email}}</td>
+              <td>{{ $favorite->post->title }}</td>
+              <td>{{  $favorite->user->name }}</td>
+              @can('favorite.delete', Auth::user())
               <td>
-                @foreach ($user->roles as $role)
-                    {{$role->name}}
-                @endforeach
-              </td>
-              <td>
-                <div class="custom-control custom-switch ml-2">
-                <input type="checkbox" data-id="{{$user->id}}" class="custom-control-input toggle-class pl-4" id="customSwitch{{$user->id}}"  {{ $user->status ? 'checked' : '' }}>
-                  <label class="custom-control-label" for="customSwitch{{$user->id}}"></label>
-                </div>
-              </td>
-            @can('subadmin.update', Auth::user())
-              <td><a href="{{ route('subadmin.edit',$user->id)}}"><i class="nav-icon fas fa-edit"></i></a></td>
-             @endcan
-             @can('subadmin.delete', Auth::user())
-              <td>
-              <form id="delete-form-{{$user->id}}" action="{{ route('subadmin.destroy',$user->id)}}" method="POST" style="display: none">
+              <form id="delete-form-{{$favorite->id}}" action="{{ route('favorite.destroy',$favorite->id)}}" method="POST" style="display: none">
                  {{ csrf_field() }}
                  {{ method_field('DELETE') }}
               </form>
-            <a href="#" onclick="deletetag({{$user->id}})"><i class="nav-icon fas fa-trash"> </i></a>
+              <a href="" onclick="deletetag({{$favorite->id}})"><i class="nav-icon fas fa-trash"> </i></a>
               </td>
-              @endcan
-            </tr>
+              @endcan 
+            </tr> 
               @endforeach
             </tbody>
           </table>
@@ -139,25 +115,5 @@
 });
   }
 </script>
-<script>
-  $(function() {
-    $('.toggle-class').change(function() {
-        var status = $(this).prop('checked') == true ? 1 : 0; 
-        var user_id = $(this).data('id'); 
-         
-        $.ajax({
-            type: "GET",
-            dataType: "json",
-            url: '/changeStatuss',
-            data: {'status': status, 'user_id': user_id},
-            success: function(data){
-              toastr.success('Status change successfully.','Success',{
-                        closeButton: true,
-                        progressBar: true,
-                    })
-            }
-        });
-    })
-  })
-</script>
+
 @endsection

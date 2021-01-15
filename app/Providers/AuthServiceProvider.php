@@ -33,6 +33,7 @@ class AuthServiceProvider extends ServiceProvider
         Gate::resource('permissions','App\Policies\PermissionPolicy');
         Gate::resource('subadmin','App\Policies\SubAdminPolicy');
         Gate::resource('comment','App\Policies\CommentPolicy');
+        Gate::resource('favorite','App\Policies\FavoritePolicy');
         //
     }
 }

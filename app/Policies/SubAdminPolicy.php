@@ -41,7 +41,7 @@ class SubAdminPolicy
     public function create(admin $user)
     {
         //
-        return $this->getPermission($user,17);
+        return $this->getPermission($user,20);
     }
 
     /**
@@ -54,7 +54,7 @@ class SubAdminPolicy
     public function update(admin $user)
     {
         //
-        return $this->getPermission($user,17);
+        return $this->getPermission($user,21);
     }
 
     /**
@@ -67,7 +67,7 @@ class SubAdminPolicy
     public function delete(admin $user)
     {
         //
-        return $this->getPermission($user,17);
+        return $this->getPermission($user,22);
     }
 
     /**

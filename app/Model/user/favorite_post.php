@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class favorite_post extends Model
 {
     //
-    public function posts()
+    public function post()
     {
         return $this->belongsTo('App\Model\user\post');
     }

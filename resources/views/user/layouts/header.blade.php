@@ -11,9 +11,18 @@
               <div class="collapse navbar-collapse justify-content-end align-items-center" id="navbarSupportedContent">
                 <ul class="navbar-nav">
                 <li><a href="{{ route('home',app()->getLocale()) }}">{{__('header.home')}}</a></li>
+                <li><a href="{{ route('allpost',app()->getLocale()) }}">{{__('header.post')}}</a></li>
+                @if (isset($categories) && !$categories->isEmpty())
+                    @foreach ($categories as $categories)
+                        @if (!$categories->posts()->count()==0)
+                            <li><a href="{{ route('category',['locale'=>app()->getLocale(),'category'=>$categories->slug]) }}">{{ $categories->name }}</a></li>
+                        @endif    
+                    @endforeach
+                    @endif  
                 @foreach (config('app.available_locales') as $locale)
                 {{-- <li><a href="{{ route(\Illuminate\Support\Facades\Route::currentRouteName(),$locale)}}">{{ strtoupper($locale)}}</a></li> --}}
                 @endforeach
+                    {{-- 
                     {{-- 
                     <li><a href="#fashion">fashion</a></li> 
                     --}}

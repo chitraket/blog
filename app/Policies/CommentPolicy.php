@@ -65,7 +65,7 @@ class CommentPolicy
     public function delete(admin $user)
     {
         //
-        return $this->getPermission($user,25);
+        return $this->getPermission($user,23);
     }
 
     /**

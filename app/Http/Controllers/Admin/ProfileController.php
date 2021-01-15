@@ -26,37 +26,37 @@ class ProfileController extends Controller
             'email' => 'required|string|email|max:255|unique:admins,email,'.Auth::user()->id,
             'image' => 'image|mimes:jpeg,png,jpg',
             'phone'=>'required|numeric',
-            'username'=>'required|unique:admins,username,'.Auth::user()->id
         ]);
       //  $user = admin::findOrFail(Auth::id());
         $user= admin::find(Auth::user()->id);
         $image = $request->file('image');
-        if ($request->hasfile('image')) {
+        
             if (isset($image)) {
-                $imageName  = md5(time()).'.'.$image->getClientOriginalExtension();
-                if ($user->image != "default.png") {
-                    if (Storage::disk('public')->exists('images/admin_123X122/'.$user->image)) {
-                        Storage::disk('public')->delete('images/admin_123X122/'.$user->image);
+                if ($request->hasfile('image')) {
+                    $imageName  = md5(time()).'.'.$image->getClientOriginalExtension();
+                    if ($user->image != "default.png") {
+                        if (Storage::disk('public')->exists('images/admin_123X122/'.$user->image)) {
+                            Storage::disk('public')->delete('images/admin_123X122/'.$user->image);
+                        }
+                        if (Storage::disk('public')->exists('images/admin_40X40/'.$user->image)) {
+                            Storage::disk('public')->delete('images/admin_40X40/'.$user->image);
+                        }
+                    } else {
                     }
-                    if (Storage::disk('public')->exists('images/admin_40X40/'.$user->image)) {
-                        Storage::disk('public')->delete('images/admin_40X40/'.$user->image);
-                    }
-                } else {
+                    $postImage = Image::make($image)->resize(123, 122)->encode();
+                    $postImage1 = Image::make($image)->resize(62, 62)->encode();
+                    Storage::disk('public')->put('images/admin_123X122/'.$imageName, $postImage);
+                    Storage::disk('public')->put('images/admin_40X40/'.$imageName, $postImage1);
                 }
-                $postImage = Image::make($image)->resize(123, 122)->encode();
-                $postImage1 = Image::make($image)->resize(62, 62)->encode();
-                Storage::disk('public')->put('images/admin_123X122/'.$imageName, $postImage);
-                Storage::disk('public')->put('images/admin_40X40/'.$imageName, $postImage1);
             } else {
                 $imageName = $user->image;
             }
-        }
         $user->image=$imageName;
         $user->name=$request->name;
         $user->email=$request->email;
         $user->phone=$request->phone;
         $user->about=$request->about;
-        $user->username=$request->username;
+        $user->username=str_slug($request->name);
         if ($user->save()) {
             Toastr::success('Admin Successfully Updated ', 'Success');
         }

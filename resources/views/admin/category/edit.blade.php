@@ -49,20 +49,16 @@
                             <input type="text" class="form-control" id="exampleInputcategorytitle1" name="title" placeholder="Category Title" value="{{$category->name}}">
                         </div>
                         <div class="form-group">
-                            <label for="exampleInputcategoryslug1">Category Slug</label>
-                        <input type="text" class="form-control" id="exampleInputcategoryslug1" name="slug" placeholder="Category Slug" value="{{ $category->slug}}">
-                        </div>
-                        <div class="form-group">
                           <label>Category Language</label>
                           <select class="form-control"  name="language" style="width: 100%;" id="sub_category_name">
                             <option value="en"
                             @if ($category->language=="en")
                                 selected
-                            @endif>en</option>
+                            @endif>English</option>
                             <option value="hi"
                             @if ($category->language=="hi")
                                 selected
-                            @endif>hi</option>
+                            @endif>Hindi</option>
                           </select>
                         </div>
                     </div>
